@@ -107,8 +107,8 @@ namespace LibraryOfGamecraft.Player
                 return;
             }
 
-            // XZ 平面の移動方向ベクトル（Y 成分は無視）
-            Vector3 moveDir = new Vector3(_moveInput.x, 0f, _moveInput.y).normalized;
+            // カメラ基準の移動方向を取得（カメラ未設定時はワールド基準にフォールバック）
+            Vector3 moveDir = GetCameraRelativeMoveDir();
 
             // 移動方向への現在速度を射影で取得（横滑り分を除外）
             float currentSpeed = Vector3.Dot(_rb.linearVelocity, moveDir);
@@ -132,6 +132,26 @@ namespace LibraryOfGamecraft.Player
         public void ResetIntegral()
         {
             _integralError = 0f;
+        }
+
+        /// <summary>
+        /// カメラの向きを基準にした XZ 平面上の移動方向ベクトルを返す。
+        ///
+        ///   W キー → カメラが向いている方向へ進む
+        ///   A キー → カメラの左方向へ進む
+        ///
+        /// _hub.CameraTransform が未設定の場合はワールド座標基準（従来の動作）にフォールバックする。
+        /// </summary>
+        private Vector3 GetCameraRelativeMoveDir()
+        {
+            if (_hub.CameraTransform == null)
+                return new Vector3(_moveInput.x, 0f, _moveInput.y).normalized;
+
+            // カメラの forward / right を XZ 平面に投影して正規化（坂の上を見ていても水平移動になる）
+            Vector3 camForward = Vector3.ProjectOnPlane(_hub.CameraTransform.forward, Vector3.up).normalized;
+            Vector3 camRight   = Vector3.ProjectOnPlane(_hub.CameraTransform.right,   Vector3.up).normalized;
+
+            return (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
         }
 
         private void FaceDirection(Vector3 direction)

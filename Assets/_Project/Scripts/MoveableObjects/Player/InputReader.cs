@@ -14,6 +14,9 @@ namespace LibraryOfGamecraft.Player
         /// <summary>WASD / 矢印キーの入力（各軸 -1〜1）</summary>
         public Vector2 MoveInput { get; private set; }
 
+        /// <summary>マウス／右スティックのルック入力（ピクセルデルタ）</summary>
+        public Vector2 LookInput { get; private set; }
+
         /// <summary>このフレームにジャンプキーが押されたか（1フレームのみ true）</summary>
         public bool JumpPressed { get; private set; }
 
@@ -30,7 +33,8 @@ namespace LibraryOfGamecraft.Player
 
         private void Update()
         {
-            MoveInput = _actions.Player.Move.ReadValue<Vector2>();
+            MoveInput  = _actions.Player.Move.ReadValue<Vector2>();
+            LookInput  = _actions.Player.Look.ReadValue<Vector2>();
         }
 
         /// <summary>
