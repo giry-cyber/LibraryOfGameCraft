@@ -41,6 +41,10 @@ namespace LibraryOfGamecraft.Player
         [Tooltip("空中で追加できるジャンプ回数（2 段ジャンプは 1）")]
         [SerializeField] private int _maxExtraJumps = 1;
 
+        [Header("カメラ")]
+        [Tooltip("Main Camera の Transform。カメラ基準移動の方向計算に使用する。")]
+        [SerializeField] private Transform _cameraTransform;
+
         [Header("接地判定")]
         [Tooltip("足元の判定球の半径。CapsuleCollider の半径に合わせること。")]
         [SerializeField] private float _groundCheckRadius = 0.28f;
@@ -76,6 +80,7 @@ namespace LibraryOfGamecraft.Player
         public float     GroundCheckRadius          => _groundCheckRadius;
         public float     GroundCheckDistance        => _groundCheckDistance;
         public LayerMask GroundLayer                => _groundLayer;
+        public Transform CameraTransform           => _cameraTransform;
 
         // ── ライフサイクル ───────────────────────────────────────────────
 
