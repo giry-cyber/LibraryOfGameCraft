@@ -21,6 +21,7 @@ namespace LibraryOfGamecraft.Player
     [RequireComponent(typeof(MovementMotor))]
     [RequireComponent(typeof(GroundChecker))]
     [RequireComponent(typeof(JumpHandler))]
+    [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerController : MonoBehaviour
     {

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace LibraryOfGamecraft.Player.States
 {
     /// <summary>
@@ -5,9 +7,18 @@ namespace LibraryOfGamecraft.Player.States
     /// </summary>
     public class MoveState : IPlayerState
     {
-        public void Enter(PlayerApiHub hub) { }
+        public void Enter(PlayerApiHub hub)
+        {
+            hub.PlayerAnimator.PlayMove(0f);
+        }
 
-        public void Update(PlayerApiHub hub) { }
+        public void Update(PlayerApiHub hub)
+        {
+            // 水平速度を終端速度で正規化してブレンドツリーを更新（Walk ↔ Run）
+            float horizontalSpeed = Vector3.ProjectOnPlane(hub.Rigidbody.linearVelocity, Vector3.up).magnitude;
+            float normalizedSpeed = horizontalSpeed / hub.TerminalHorizontalVelocity;
+            hub.PlayerAnimator.PlayMove(normalizedSpeed);
+        }
 
         public void FixedUpdate(PlayerApiHub hub)
         {
