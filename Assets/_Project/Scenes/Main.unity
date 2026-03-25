@@ -171,6 +171,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7784562102066028214, guid: da1f14335736050489c9fe5a0f1daa17, type: 3}
+      propertyPath: _jumpForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7784562102066028214, guid: da1f14335736050489c9fe5a0f1daa17, type: 3}
+      propertyPath: _moveSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7784562102066028214, guid: da1f14335736050489c9fe5a0f1daa17, type: 3}
+      propertyPath: _maxMoveForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7784562102066028214, guid: da1f14335736050489c9fe5a0f1daa17, type: 3}
+      propertyPath: _cameraTransform
+      value: 
+      objectReference: {fileID: 1921218929}
+    - target: {fileID: 7784562102066028214, guid: da1f14335736050489c9fe5a0f1daa17, type: 3}
+      propertyPath: _terminalHorizontalVelocity
+      value: 50
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
