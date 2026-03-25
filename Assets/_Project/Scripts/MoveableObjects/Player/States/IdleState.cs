@@ -10,6 +10,7 @@ namespace LibraryOfGamecraft.Player.States
         {
             // 積分誤差をリセットして以前の状態を引き継がないようにする
             hub.MovementMotor.ResetIntegral();
+            hub.PlayerAnimator.PlayIdle();
         }
 
         public void Update(PlayerApiHub hub) { }

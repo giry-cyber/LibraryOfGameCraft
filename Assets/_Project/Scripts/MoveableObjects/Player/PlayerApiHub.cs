@@ -62,6 +62,7 @@ namespace LibraryOfGamecraft.Player
         public MovementMotor  MovementMotor  { get; private set; }
         public GroundChecker  GroundChecker  { get; private set; }
         public JumpHandler    JumpHandler    { get; private set; }
+        public PlayerAnimator PlayerAnimator { get; private set; }
 
         /// <summary>
         /// ステートマシンの参照。PlayerController.Start() から SetStateMachine() で登録される。
@@ -91,12 +92,14 @@ namespace LibraryOfGamecraft.Player
             MovementMotor = GetComponent<MovementMotor>();
             GroundChecker = GetComponent<GroundChecker>();
             JumpHandler   = GetComponent<JumpHandler>();
+            PlayerAnimator = GetComponent<PlayerAnimator>();
 
-            if (Rigidbody     == null) Debug.LogError("[PlayerApiHub] Rigidbody が見つかりません",     this);
-            if (InputReader   == null) Debug.LogError("[PlayerApiHub] InputReader が見つかりません",   this);
-            if (MovementMotor == null) Debug.LogError("[PlayerApiHub] MovementMotor が見つかりません", this);
-            if (GroundChecker == null) Debug.LogError("[PlayerApiHub] GroundChecker が見つかりません", this);
-            if (JumpHandler   == null) Debug.LogError("[PlayerApiHub] JumpHandler が見つかりません",   this);
+            if (Rigidbody      == null) Debug.LogError("[PlayerApiHub] Rigidbody が見つかりません",      this);
+            if (InputReader    == null) Debug.LogError("[PlayerApiHub] InputReader が見つかりません",    this);
+            if (MovementMotor  == null) Debug.LogError("[PlayerApiHub] MovementMotor が見つかりません",  this);
+            if (GroundChecker  == null) Debug.LogError("[PlayerApiHub] GroundChecker が見つかりません",  this);
+            if (JumpHandler    == null) Debug.LogError("[PlayerApiHub] JumpHandler が見つかりません",    this);
+            if (PlayerAnimator == null) Debug.LogError("[PlayerApiHub] PlayerAnimator が見つかりません", this);
         }
 
         // ── 公開メソッド ────────────────────────────────────────────────
