@@ -158,7 +158,8 @@ namespace LibraryOfGamecraft.Player
         {
             if (direction.sqrMagnitude < 0.01f) return;
             Quaternion target = Quaternion.LookRotation(direction, Vector3.up);
-            _rb.rotation = Quaternion.Slerp(_rb.rotation, target, 15f * Time.fixedDeltaTime);
+            Quaternion newRot = Quaternion.Slerp(_rb.rotation, target, 15f * Time.fixedDeltaTime);
+            _rb.MoveRotation(newRot);
         }
     }
 }
