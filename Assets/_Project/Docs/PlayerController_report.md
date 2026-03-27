@@ -48,6 +48,7 @@
 ```
 PlayerController.Update()
   │
+  ├─ Motor.RefreshGroundInfo()               → GroundInfo を今フレームに更新（先頭で実行）
   ├─ PlayerInputReader.ReadSnapshot()        → InputSnapshot
   ├─ InputRecorder.Record(snapshot)
   ├─ CharacterBrain.Process(snapshot)        → Command → StateMachine.RequestTransition()
@@ -57,6 +58,9 @@ PlayerController.Update()
   ├─ RotateTowardsMoveDirection()
   └─ PlayerAnimatorAdapter.Update()
 ```
+
+> **設計上の注意**: `RefreshGroundInfo()` を Update の先頭で呼ぶことで、Brain・StateMachine が今フレームの接地情報を参照できる。
+> `Motor.Tick()` 内では GroundInfo の更新を行わない（重力・Snap・Move のみ）。
 
 ### Animator パラメータ
 
@@ -131,3 +135,4 @@ gravityStrength *= FallMultiplier                     // 落下中のみ
 | --- | --- |
 | 2026-03-27 | 初版作成。CharacterController ベースの Kinematic 実装 |
 | 2026-03-27 | GravitySettings に GroundStickSpeed を追加（-2f のマジックナンバーを解消） |
+| 2026-03-27 | RefreshGroundInfo() を Update 先頭に移動。Brain・StateMachine が今フレームの接地情報を参照できるよう修正 |
