@@ -10,6 +10,7 @@ namespace LibraryOfGamecraft.Player
         GroundInfo GroundInfo { get; }
         Vector3 HorizontalVelocity { get; set; }
         float VerticalVelocity { get; set; }
+        void RefreshGroundInfo();
         void Tick(float deltaTime);
     }
 }

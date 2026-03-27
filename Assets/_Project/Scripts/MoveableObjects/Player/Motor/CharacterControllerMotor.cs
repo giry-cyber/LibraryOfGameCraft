@@ -27,9 +27,13 @@ namespace LibraryOfGamecraft.Player
             _gravity = gravity;
         }
 
-        public void Tick(float deltaTime)
+        public void RefreshGroundInfo()
         {
             UpdateGroundInfo();
+        }
+
+        public void Tick(float deltaTime)
+        {
             ApplyGravity(deltaTime);
             ApplySlopeSlide();
             ApplyGroundSnap();

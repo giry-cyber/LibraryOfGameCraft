@@ -59,6 +59,9 @@ namespace LibraryOfGamecraft.Player
 
         private void Update()
         {
+            // 接地情報を最初に更新し、Brain・StateMachine が今フレームの値を参照できるようにする
+            _motor.RefreshGroundInfo();
+
             var snapshot = _inputReader.ReadSnapshot();
             _inputRecorder.Record(snapshot);
             _context.CurrentInput = snapshot;
