@@ -1,5 +1,4 @@
 using Unity.Cinemachine;
-using LibraryOfGamecraft.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,20 +56,15 @@ namespace LibraryOfGamecraft.CameraSystem
         [Tooltip("Play 開始時にカーソルをロックするか")]
         [SerializeField] private bool _lockCursorOnStart = true;
 
-        private InputReader              _inputReader;
         private CinemachineOrbitalFollow _orbitalFollow;
 
         // ── ライフサイクル ─────────────────────────────────────────────────
 
         private void Awake()
         {
-            _inputReader = FindFirstObjectByType<InputReader>();
-
             if (_virtualCamera != null)
                 _orbitalFollow = _virtualCamera.GetComponent<CinemachineOrbitalFollow>();
 
-            if (_inputReader == null)
-                Debug.LogError("[CameraController] InputReader が見つかりません。Player GameObject が Hierarchy にあるか確認してください。", this);
             if (_virtualCamera == null)
                 Debug.LogError("[CameraController] Virtual Camera が設定されていません。Inspector で CinemachineCamera を設定してください。", this);
             if (_orbitalFollow == null)
@@ -106,10 +100,10 @@ namespace LibraryOfGamecraft.CameraSystem
         /// </summary>
         private void DriveCameraAxes()
         {
-            if (_orbitalFollow == null || _inputReader == null) return;
+            if (_orbitalFollow == null) return;
             if (Cursor.lockState != CursorLockMode.Locked) return;
 
-            Vector2 look = _inputReader.LookInput;
+            Vector2 look = Mouse.current?.delta.ReadValue() ?? Vector2.zero;
 
             // 水平軸：Wrap = true なのでそのまま加算（Cinemachine が 0〜360 でラップする）
             _orbitalFollow.HorizontalAxis.Value += look.x * _horizontalSensitivity;
