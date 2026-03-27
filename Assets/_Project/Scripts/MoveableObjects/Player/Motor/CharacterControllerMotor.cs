@@ -80,8 +80,7 @@ namespace LibraryOfGamecraft.Player
         {
             if (_groundInfo.IsGrounded && _verticalVelocity <= 0f)
             {
-                // 地面に押し付けておく小さな値（GroundSnapを確実に機能させるため）
-                _verticalVelocity = -2f;
+                _verticalVelocity = -_gravity.GroundStickSpeed;
                 return;
             }
 
