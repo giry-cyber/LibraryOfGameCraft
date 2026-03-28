@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 762b132c45cf7f648a4912e37251b242, type: 3}
   m_Name: JumpSettings
   m_EditorClassIdentifier: 
-  JumpForce: 8
+  JumpForce: 20
   MinLandingTime: 0.1
