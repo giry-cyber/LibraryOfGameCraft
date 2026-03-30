@@ -83,8 +83,9 @@ namespace LibraryOfGamecraft.Player
             // 進行方向へキャラクターを回転
             RotateTowardsMoveDirection();
 
-            // Animator パラメータを更新
-            _animatorAdapter.Update(_motor, _stateMachine);
+            // Animator パラメータを更新（Speed は MoveSpeed で正規化して 0～1 で渡す）
+            var normalizedSpeed = _motor.HorizontalVelocity.magnitude / _movementTuning.MoveSpeed;
+            _animatorAdapter.Update(_motor, _stateMachine, normalizedSpeed);
         }
 
         private void RotateTowardsMoveDirection()

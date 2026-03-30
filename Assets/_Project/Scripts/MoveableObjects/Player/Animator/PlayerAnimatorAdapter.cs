@@ -42,12 +42,12 @@ namespace LibraryOfGamecraft.Player
             _animator = animator;
         }
 
-        public void Update(ICharacterMotor motor, CharacterStateMachine stateMachine)
+        public void Update(ICharacterMotor motor, CharacterStateMachine stateMachine, float normalizedSpeed)
         {
             if (_animator == null) return;
 
             _animator.SetBool(GroundedParam, motor.GroundInfo.IsGrounded);
-            _animator.SetFloat(SpeedParam, motor.HorizontalVelocity.magnitude);
+            _animator.SetFloat(SpeedParam, normalizedSpeed);
             _animator.SetFloat(VerticalSpeedParam, motor.VerticalVelocity);
 
             // ステートが変化したときだけ対応する Trigger を発火する
