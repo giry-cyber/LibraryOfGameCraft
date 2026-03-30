@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 20
   Acceleration: 20
-  Deceleration: 5000
+  Deceleration: 20
   MaxSlopeAngle: 45
   SlideAngle: 55
   StepHeight: 0.4
