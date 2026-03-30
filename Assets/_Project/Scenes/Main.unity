@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: a8133c9d596fcae4896bd8471d22440f, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 619104c683343f24191d2540e13416d4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -345,7 +349,7 @@ MonoBehaviour:
   _movementTuning: {fileID: 11400000, guid: a111ece84279b744fbff66262759a263, type: 2}
   _jumpSettings: {fileID: 11400000, guid: 8288e5abdd24b384d8966108a33ca674, type: 2}
   _gravitySettings: {fileID: 11400000, guid: f1e4ce4c2077cca4da6903a1a0f9c831, type: 2}
-  _animator: {fileID: 0}
+  _animator: {fileID: 985187158}
   _cameraTransform: {fileID: 1921218929}
 --- !u!143 &985187154
 CharacterController:
@@ -392,6 +396,11 @@ MonoBehaviour:
   _showDebug: 1
   _movementTuning: {fileID: 11400000, guid: a111ece84279b744fbff66262759a263, type: 2}
   _guiOffset: {x: 10, y: 10}
+--- !u!95 &985187158 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: a8133c9d596fcae4896bd8471d22440f, type: 3}
+  m_PrefabInstance: {fileID: 47313218}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1645303250
 GameObject:
   m_ObjectHideFlags: 0

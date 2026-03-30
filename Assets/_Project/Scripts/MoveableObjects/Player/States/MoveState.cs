@@ -20,7 +20,7 @@ namespace LibraryOfGamecraft.Player
                 return;
             }
 
-            if (context.CurrentInput.Move.magnitude <= 0.1f)
+            if (context.Motor.HorizontalVelocity.magnitude < 0.05f)
                 context.StateMachine.RequestTransition(CharacterStateType.Idle);
         }
 
