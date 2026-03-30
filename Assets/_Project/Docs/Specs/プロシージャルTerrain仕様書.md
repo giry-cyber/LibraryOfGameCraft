@@ -852,3 +852,82 @@ binary 専用型にはしない。将来の拡張性を確保する。
 * Phase 4A/4B: Profile ベースで設計可能
 
 ---
+
+## v1.3.2 追加確定事項
+
+---
+
+## 28. TerrainGenerationProfile の扱い
+
+Generate タブのパラメータは `TerrainGenerationProfile` を編集する UI とする。生成に必要な主要パラメータはすべて Profile に保存される。
+
+### 仕様
+
+* `TerrainGenerationProfile` は `ScriptableObject`
+* Generate タブは、選択中の Profile を表示・編集する
+* `seed`、`tileSizeMeters`、`heightmapResolution`、各ノイズ設定、将来の Tree/Texture ルールは **Profile に保存**する
+* Generate 実行時は **現在選択中の Profile の値** を使う
+
+### Generate タブ先頭 UI
+
+```text
+Profile         // 参照フィールド
+New Profile
+Duplicate Profile
+Save Profile
+```
+
+### ルール
+
+* Profile 未設定なら Generate 不可
+* Tree ルールや将来の Texture ルールも同じ Profile に統合する
+
+---
+
+## 29. Edit タブ構成
+
+Edit タブは単一タブとし、`Edit Input Mode` により Numeric Range Edit（Phase 2A）と Scene Brush Edit（Phase 2B）を切り替える。編集モード Raise / Lower / Flatten は両方式で共通とする。
+
+### 共通セクション
+
+```text
+mode            // Raise / Lower / Flatten
+strengthMeters
+falloff
+targetHeightMeters  // Flatten のときのみ
+```
+
+### Phase 2A セクション（Numeric Range Edit）
+
+```text
+centerX, centerZ
+shapeType       // Circle or Rectangle
+radius または width/height
+Preview
+Apply
+```
+
+### Phase 2B セクション（Scene Brush Edit）
+
+```text
+brushRadius
+SceneView ブラシ有効化
+SceneView 上で適用
+```
+
+### Edit タブ補足
+
+* `mode` は 2A/2B で共通
+* 違うのは入力方法のみ
+* どちらも同じ `manualDeltaMap` を更新する
+
+---
+
+## 総評（v1.3.2）
+
+この v1.3.2 仕様は v1.3.1 に残っていた2点を確定させたものです。
+
+* `TerrainGenerationProfile` の設計が確定し、Phase 1 の着手前にデータ構造が安定した
+* Edit タブの UI 構成が確定し、Phase 2A/2B の実装方針が明確になった
+
+---
