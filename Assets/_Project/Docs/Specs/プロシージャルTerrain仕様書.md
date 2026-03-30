@@ -648,3 +648,207 @@ Texture + vegetation
 になっています。
 
 ---
+
+## v1.3.1 追加確定事項
+
+---
+
+## 21. Phase 2A の操作対象範囲
+
+Phase 2A は **数値指定の局所編集** です。全Terrain一括ではありません。
+
+## 入力項目
+
+```
+centerX, centerZ
+shapeType       // Circle or Rectangle
+radius          // Circle のとき
+width, height   // Rectangle のとき
+strengthMeters
+targetHeightMeters  // Flatten のとき
+falloff
+```
+
+## 補足
+
+* Phase 2A と 2B は別UIだが、**どちらも同じ `manualDeltaMap` に書き込む**
+* Phase 2A は「ブラシなしの範囲編集」
+* Phase 2B は「SceneView ブラシ編集」
+
+---
+
+## 22. Phase 3 マスク編集方法
+
+## Phase 3A（必須）
+
+数値指定による範囲編集
+
+```
+centerX, centerZ
+shapeType       // Circle or Rectangle
+radius または width/height
+maskValue       // 0.0〜1.0
+falloff
+```
+
+対象マスク: `protectedMask` / `noVegetationMask` / `flattenMask` のいずれかを選択
+
+## Phase 3B（拡張・後回し可）
+
+SceneView ブラシ編集
+
+```
+brush radius
+strength
+selectedMaskType
+mode    // Add or Subtract
+```
+
+## 可視化
+
+Terrain XZ 平面に対応したワールド空間プレビュー
+
+---
+
+## 23. Phase 4B Tree Prototype 設定方法
+
+`TerrainGenerationProfile` に `TreePrototypeRule` のリストを保持する。
+
+## TreePrototypeRule フィールド
+
+```
+prefab
+bendFactor
+minHeight, maxHeight
+minSlopeDeg, maxSlopeDeg
+densityPer100m2
+randomScaleMin, randomScaleMax
+randomRotationY
+colorJitter
+heightScaleJitter
+```
+
+## グリッド cell サイズ
+
+```
+cellSizeMeters = sqrt(100 / densityPer100m2)
+```
+
+例:
+
+* 4本/100m² → cellSize = 5m
+* 25本/100m² → cellSize = 2m
+
+## 初期推奨上限
+
+* `densityPer100m2 <= 1.0` を推奨
+
+## 適用方法
+
+* Terrain に存在しない TreePrototype は生成時に自動追加
+* 各ルールごとに候補点を生成し、条件を満たした点に `TreeInstance` を作る
+
+---
+
+## 24. Domain Warp インターフェース
+
+```csharp
+public interface IDomainWarp2D
+{
+    Vector2 Warp(float x, float z);
+}
+
+public interface IDomainWarp2DFactory
+{
+    IDomainWarp2D Create(int seed);
+}
+```
+
+## 挙動
+
+```
+offset = warp.Warp(x, z)
+height = baseNoise.Sample(x + offset.x, z + offset.y)
+```
+
+## 備考
+
+* Domain Warp は Phase 1 optional
+* `useDomainWarp == false` のとき UI 項目は無効表示
+
+---
+
+## 25. Editor Window 構成
+
+クラス名: `TerrainToolWindow`
+
+単一ウィンドウ＋タブ構成
+
+## タブ一覧
+
+| タブ名 | 内容 |
+| --- | --- |
+| Generate | Phase 1: Terrain生成 |
+| Edit | Phase 2A/2B: 数値・ブラシ編集 |
+| Mask | Phase 3A/3B: マスク編集 |
+| Texture | Phase 4A: テクスチャ |
+| Vegetation | Phase 4A/4B: 草・木 |
+| Persistence | Save/Load/Apply 操作 |
+| Debug | 可視化デバッグ |
+
+## SceneView 連携
+
+SceneView ブラシは TerrainToolWindow の補助機能として実装する
+
+---
+
+## 26. マスクの float 解釈
+
+保存形式はすべて float32。意味はマスクごとに定義する。
+
+| マスク | 値域 | 意味 |
+| --- | --- | --- |
+| protectedMask | 0.0〜1.0 | 0=保護なし、1=完全保護（blend mask） |
+| noVegetationMask | 0.0〜1.0 | 0=配置可、1=配置禁止（将来は密度減衰マスクに拡張可） |
+| flattenMask | 0.0〜1.0 | 平坦化影響度（blend mask） |
+
+binary 専用型にはしない。将来の拡張性を確保する。
+
+---
+
+## 27. 保存タイミング
+
+明示的 Save ボタン方式
+
+### 操作定義
+
+| 操作 | 内容 |
+| --- | --- |
+| Apply | メモリ上のデータを Unity TerrainData に反映 |
+| Save | `.bytes` ファイルに書き出し（永続化） |
+| Load | `.bytes` ファイルから再読込 |
+
+### Dirty 状態管理
+
+* 未保存変更がある場合、ウィンドウ上に警告表示
+* 自動保存は初期実装では行わない
+
+### 将来拡張
+
+* Auto Save on Apply
+* Auto Save every N seconds
+
+---
+
+## 総評（v1.3.1）
+
+この v1.3.1 仕様は v1.3 の未定義部分をすべて確定させたものです。
+
+* Phase 1: 即着手可能
+* Phase 2A: 即着手可能
+* Phase 2B: SceneView ブラシとして実装可能
+* Phase 3A: 即着手可能
+* Phase 3B: Phase 3A 完了後に追加
+* Phase 4A/4B: Profile ベースで設計可能
+
+---
