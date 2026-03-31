@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// 1チャンク分の描画を担う MonoBehaviour。

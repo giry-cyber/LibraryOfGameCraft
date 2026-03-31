@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// プレイヤー周辺のチャンクを動的にロード/アンロードする。
