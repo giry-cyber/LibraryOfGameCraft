@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11b556e0c7fbbca4480901ec13c570f8, type: 3}
+  m_Name: tile_1_1
+  m_EditorClassIdentifier: 
+  terrainGuid: tile_1_1
+  width: 0
+  height: 0
+  generatedHeightPath: Assets/TerrainToolData/tile_1_1/generated.bytes
+  manualDeltaPath: Assets/TerrainToolData/tile_1_1/manualDelta.bytes
+  protectedMaskPath: Assets/TerrainToolData/tile_1_1/protectedMask.bytes
+  noVegetationMaskPath: Assets/TerrainToolData/tile_1_1/noVegetationMask.bytes
+  flattenMaskPath: Assets/TerrainToolData/tile_1_1/flatten.bytes

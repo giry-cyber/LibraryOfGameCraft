@@ -16,6 +16,7 @@ namespace LibraryOfGamecraft.Terrain
 
         /// <summary>
         /// GUID を元に各バイナリファイルのパスを一括設定する。
+        /// Inspector のコンテキストメニュー（右クリック）からも実行可能。
         /// </summary>
         public void SetPaths(string guid)
         {
@@ -26,6 +27,21 @@ namespace LibraryOfGamecraft.Terrain
             protectedMaskPath = $"{dir}/protectedMask.bytes";
             noVegetationMaskPath = $"{dir}/noVegetationMask.bytes";
             flattenMaskPath = $"{dir}/flatten.bytes";
+        }
+
+        [ContextMenu("Apply terrainGuid to Paths")]
+        private void ApplyGuidToPaths()
+        {
+            if (string.IsNullOrEmpty(terrainGuid))
+            {
+                Debug.LogWarning("[TerrainPersistentData] terrainGuid が未設定です。先に入力してください。");
+                return;
+            }
+            SetPaths(terrainGuid);
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+            Debug.Log($"[TerrainPersistentData] パスを設定しました: Assets/TerrainToolData/{terrainGuid}/");
         }
     }
 }
