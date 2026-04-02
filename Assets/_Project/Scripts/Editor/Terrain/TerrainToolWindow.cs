@@ -7,9 +7,24 @@ namespace LibraryOfGamecraft.Terrain.Editor
 {
     public class TerrainToolWindow : EditorWindow
     {
-        private enum Tab { Generate = 0, Batch = 1, Paint = 2, Vegetation = 3 }
+        private enum Tab { Generate = 0, Batch = 1, Edit = 2, Vegetation = 3 }
 
         private Tab _currentTab = Tab.Generate;
+
+        // ---- Edit タブ ----
+        private enum EditInputMode { NumericRange, SceneBrush }
+        private EditInputMode _editInputMode = EditInputMode.NumericRange;
+        private EditMode      _editMode              = EditMode.Raise;
+        private float         _editStrengthMeters    = 10f;
+        private float         _editFalloff           = 0.5f;
+        private float         _editTargetHeightMeters = 50f;
+        // Phase 2A: Numeric Range
+        private float         _editCenterX    = 0f;
+        private float         _editCenterZ    = 0f;
+        private ShapeType     _editShapeType  = ShapeType.Circle;
+        private float         _editRadius     = 50f;
+        private float         _editRectWidth  = 100f;
+        private float         _editRectHeight = 100f;
 
         // ---- Generate タブ ----
         private TerrainGenerationProfile _profile;
@@ -25,7 +40,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
         private SerializedObject _batchConfigSO;
         private Vector2 _batchScrollPos;
 
-        private static readonly string[] TabLabels = { "Generate", "Batch", "Paint", "Vegetation" };
+        private static readonly string[] TabLabels = { "Generate", "Batch", "Edit", "Vegetation" };
 
         private void OnEnable()
         {
@@ -56,6 +71,9 @@ namespace LibraryOfGamecraft.Terrain.Editor
                     break;
                 case Tab.Batch:
                     DrawBatchTab();
+                    break;
+                case Tab.Edit:
+                    DrawEditTab();
                     break;
                 default:
                     EditorGUILayout.HelpBox("Coming Soon", MessageType.Info);
@@ -196,6 +214,119 @@ namespace LibraryOfGamecraft.Terrain.Editor
             _profile = AssetDatabase.LoadAssetAtPath<TerrainGenerationProfile>(dstPath);
             _profileSO = new SerializedObject(_profile);
             _isDirty = false;
+        }
+
+        // ================================================================
+        //  Edit タブ (Phase 2A: Numeric Range Edit)
+        // ================================================================
+
+        private void DrawEditTab()
+        {
+            EditorGUILayout.LabelField("Edit Input Mode", EditorStyles.boldLabel);
+            _editInputMode = (EditInputMode)GUILayout.Toolbar((int)_editInputMode,
+                new[] { "Numeric Range", "Scene Brush" });
+            EditorGUILayout.Space();
+
+            // ---- 共通セクション ----
+            EditorGUILayout.LabelField("Common", EditorStyles.boldLabel);
+            _editMode           = (EditMode)EditorGUILayout.EnumPopup("Mode", _editMode);
+            _editStrengthMeters = EditorGUILayout.FloatField("Strength (m)", _editStrengthMeters);
+            _editFalloff        = EditorGUILayout.Slider("Falloff", _editFalloff, 0f, 1f);
+            if (_editMode == EditMode.Flatten)
+                _editTargetHeightMeters = EditorGUILayout.FloatField("Target Height (m)", _editTargetHeightMeters);
+
+            EditorGUILayout.Space();
+
+            switch (_editInputMode)
+            {
+                case EditInputMode.NumericRange:
+                    DrawNumericRangeSection();
+                    break;
+                case EditInputMode.SceneBrush:
+                    EditorGUILayout.HelpBox("Scene Brush (Phase 2B) は未実装です", MessageType.Info);
+                    break;
+            }
+        }
+
+        private void DrawNumericRangeSection()
+        {
+            EditorGUILayout.LabelField("Numeric Range Edit", EditorStyles.boldLabel);
+
+            _editCenterX   = EditorGUILayout.FloatField("Center X (m)", _editCenterX);
+            _editCenterZ   = EditorGUILayout.FloatField("Center Z (m)", _editCenterZ);
+            _editShapeType = (ShapeType)EditorGUILayout.EnumPopup("Shape", _editShapeType);
+
+            if (_editShapeType == ShapeType.Circle)
+            {
+                _editRadius = EditorGUILayout.FloatField("Radius (m)", _editRadius);
+            }
+            else
+            {
+                _editRectWidth  = EditorGUILayout.FloatField("Width (m)",  _editRectWidth);
+                _editRectHeight = EditorGUILayout.FloatField("Height (m)", _editRectHeight);
+            }
+
+            EditorGUILayout.Space();
+
+            bool canApply = _targetTerrain != null && _persistentData != null && _profile != null;
+
+            if (!canApply)
+                EditorGUILayout.HelpBox("Generate タブで Terrain・Persistent Data・Profile を設定してください", MessageType.Warning);
+
+            using (new EditorGUI.DisabledScope(!canApply))
+            {
+                if (GUILayout.Button("Apply Edit", GUILayout.Height(32f)))
+                    ExecuteEditApply();
+            }
+        }
+
+        private void ExecuteEditApply()
+        {
+            // generated を読み込む（読み取り専用）
+            float[] generated = HeightMapIO.Load(_persistentData.generatedHeightPath);
+            if (generated == null)
+            {
+                Debug.LogError("[TerrainTool] generatedHeightMap が見つかりません。先に Generate を実行してください。");
+                return;
+            }
+
+            // manualDelta を読み込む（なければゼロ配列）
+            float[] manualDelta = HeightMapIO.Load(_persistentData.manualDeltaPath);
+            if (manualDelta == null)
+                manualDelta = new float[_profile.heightmapResolution * _profile.heightmapResolution];
+
+            // 編集を適用
+            ManualDeltaEditor.Apply(
+                manualDelta,
+                generated,
+                _profile.heightmapResolution,
+                _profile.tileSizeMeters,
+                new Vector2(_tileOriginX, _tileOriginZ),
+                _profile.heightScale,
+                _editMode,
+                _editShapeType,
+                _editCenterX,
+                _editCenterZ,
+                _editRadius,
+                _editRectWidth,
+                _editRectHeight,
+                _editStrengthMeters,
+                _editTargetHeightMeters,
+                _editFalloff);
+
+            // manualDelta を保存
+            HeightMapIO.Save(manualDelta, _persistentData.manualDeltaPath);
+
+            // Terrain に反映
+            TerrainApplier.Apply(
+                _targetTerrain,
+                generated,
+                manualDelta,
+                _profile.heightmapResolution,
+                _profile.tileSizeMeters,
+                _profile.heightScale);
+
+            Debug.Log("[TerrainTool] Edit Apply 完了");
         }
 
         // ================================================================
