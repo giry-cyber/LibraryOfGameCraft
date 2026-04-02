@@ -15,9 +15,9 @@ MonoBehaviour:
   seed: 42
   tileSizeMeters: 512
   heightmapResolution: 513
-  heightScale: 100
+  heightScale: 50
   noiseScale: 0.003
-  octaves: 6
+  octaves: 3
   persistence: 0.5
   lacunarity: 2
   useDomainWarp: 0
