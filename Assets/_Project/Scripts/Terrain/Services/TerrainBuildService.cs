@@ -36,11 +36,32 @@ namespace LibraryOfGamecraft.Terrain
             // ハイトマップ生成
             float[] generated = generator.Generate(profile, tileOrigin);
 
-            // 手動デルタの読み込み
+            // 手動デルタの読み込み・Unity 標準ツール編集の吸収
             float[] manualDelta = null;
 #if UNITY_EDITOR
-            if (!string.IsNullOrEmpty(persistentData.manualDeltaPath))
-                manualDelta = HeightMapIO.Load(persistentData.manualDeltaPath);
+            bool isFirstGenerate = string.IsNullOrEmpty(persistentData.generatedHeightPath)
+                                || !System.IO.File.Exists(
+                                       System.IO.Path.GetFullPath(persistentData.generatedHeightPath));
+
+            if (isFirstGenerate)
+            {
+                // 初回: manualDelta がなければゼロ配列
+                if (!string.IsNullOrEmpty(persistentData.manualDeltaPath))
+                    manualDelta = HeightMapIO.Load(persistentData.manualDeltaPath);
+            }
+            else
+            {
+                // 2回目以降: Unity 標準ツールによる差分を manualDelta に取り込む
+                // new_manualDelta[i] = currentTerrain[i] - oldGenerated[i]
+                float[] oldGenerated = HeightMapIO.Load(persistentData.generatedHeightPath);
+                float[] currentTerrain = TerrainApplier.ReadHeights(
+                    terrain, profile.heightmapResolution);
+
+                int size = profile.heightmapResolution * profile.heightmapResolution;
+                manualDelta = new float[size];
+                for (int i = 0; i < size; i++)
+                    manualDelta[i] = currentTerrain[i] - oldGenerated[i];
+            }
 #endif
 
             // Terrain に適用
@@ -57,11 +78,15 @@ namespace LibraryOfGamecraft.Terrain
             if (!string.IsNullOrEmpty(persistentData.generatedHeightPath))
                 HeightMapIO.Save(generated, persistentData.generatedHeightPath);
 
-            // 手動デルタが存在しない場合はゼロ配列を初期ファイルとして保存
+            // manualDelta が null（パス未設定など）のときはゼロ配列を初期ファイルとして保存
             if (manualDelta == null && !string.IsNullOrEmpty(persistentData.manualDeltaPath))
             {
-                float[] zeroArray = new float[profile.heightmapResolution * profile.heightmapResolution];
-                HeightMapIO.Save(zeroArray, persistentData.manualDeltaPath);
+                manualDelta = new float[profile.heightmapResolution * profile.heightmapResolution];
+                HeightMapIO.Save(manualDelta, persistentData.manualDeltaPath);
+            }
+            else if (manualDelta != null && !string.IsNullOrEmpty(persistentData.manualDeltaPath))
+            {
+                HeightMapIO.Save(manualDelta, persistentData.manualDeltaPath);
             }
 
             UnityEditor.EditorUtility.SetDirty(persistentData);

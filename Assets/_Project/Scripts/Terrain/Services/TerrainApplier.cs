@@ -7,6 +7,19 @@ namespace LibraryOfGamecraft.Terrain
     /// </summary>
     public static class TerrainApplier
     {
+        /// <summary>
+        /// Unity Terrain の現在のハイトマップを float 配列として読み取る。
+        /// </summary>
+        public static float[] ReadHeights(UnityEngine.Terrain terrain, int resolution)
+        {
+            float[,] h = terrain.terrainData.GetHeights(0, 0, resolution, resolution);
+            float[] result = new float[resolution * resolution];
+            for (int z = 0; z < resolution; z++)
+                for (int x = 0; x < resolution; x++)
+                    result[z * resolution + x] = h[z, x];
+            return result;
+        }
+
         public static void Apply(
             UnityEngine.Terrain terrain,
             float[] generatedHeights,

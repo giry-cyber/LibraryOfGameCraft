@@ -26,6 +26,14 @@ namespace LibraryOfGamecraft.Terrain.Editor
         private float         _editRectWidth  = 100f;
         private float         _editRectHeight = 100f;
 
+        // Phase 2B: Scene Brush
+        private float         _brushRadius          = 50f;
+        private bool          _brushActive          = false;
+        private Vector3       _brushWorldPos;
+        private Vector3       _brushLastApplyPos;
+        private float[]       _brushGeneratedCache;
+        private float[]       _brushDeltaCache;
+
         // ---- Generate タブ ----
         private TerrainGenerationProfile _profile;
         private SerializedObject _profileSO;
@@ -49,6 +57,16 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _profileSO = new SerializedObject(_profile);
             if (_batchConfig != null && _batchConfigSO == null)
                 _batchConfigSO = new SerializedObject(_batchConfig);
+
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+
+        private void OnDisable()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            _brushActive = false;
+            _brushGeneratedCache = null;
+            _brushDeltaCache = null;
         }
 
         [MenuItem("Tools/LibraryOfGamecraft/Terrain Tool")]
@@ -243,7 +261,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
                     DrawNumericRangeSection();
                     break;
                 case EditInputMode.SceneBrush:
-                    EditorGUILayout.HelpBox("Scene Brush (Phase 2B) は未実装です", MessageType.Info);
+                    DrawSceneBrushSection();
                     break;
             }
         }
@@ -290,10 +308,13 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 return;
             }
 
-            // manualDelta を読み込む（なければゼロ配列）
-            float[] manualDelta = HeightMapIO.Load(_persistentData.manualDeltaPath);
-            if (manualDelta == null)
-                manualDelta = new float[_profile.heightmapResolution * _profile.heightmapResolution];
+            // Unity 標準ツールによる差分を manualDelta に吸収する
+            // new_manualDelta[i] = currentTerrain[i] - generated[i]
+            float[] currentTerrain = TerrainApplier.ReadHeights(_targetTerrain, _profile.heightmapResolution);
+            int size = _profile.heightmapResolution * _profile.heightmapResolution;
+            float[] manualDelta = new float[size];
+            for (int i = 0; i < size; i++)
+                manualDelta[i] = currentTerrain[i] - generated[i];
 
             // 編集を適用
             ManualDeltaEditor.Apply(
@@ -327,6 +348,139 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _profile.heightScale);
 
             Debug.Log("[TerrainTool] Edit Apply 完了");
+        }
+
+        private void DrawSceneBrushSection()
+        {
+            EditorGUILayout.LabelField("Scene Brush Edit", EditorStyles.boldLabel);
+            _brushRadius = EditorGUILayout.FloatField("Brush Radius (m)", _brushRadius);
+
+            bool canBrush = _targetTerrain != null && _persistentData != null && _profile != null;
+            if (!canBrush)
+            {
+                EditorGUILayout.HelpBox("Generate タブで Terrain・Persistent Data・Profile を設定してください", MessageType.Warning);
+                return;
+            }
+
+            EditorGUILayout.Space();
+
+            string toggleLabel = _brushActive ? "ブラシ無効化" : "ブラシ有効化";
+            if (GUILayout.Button(toggleLabel, GUILayout.Height(32f)))
+            {
+                _brushActive = !_brushActive;
+                if (_brushActive)
+                    LoadBrushCaches();
+                else
+                    FlushBrushCaches();
+
+                SceneView.RepaintAll();
+            }
+
+            if (_brushActive)
+                EditorGUILayout.HelpBox("SceneView でマウスドラッグして塗ってください。\nブラシを無効化すると保存されます。", MessageType.Info);
+        }
+
+        private void LoadBrushCaches()
+        {
+            _brushGeneratedCache = HeightMapIO.Load(_persistentData.generatedHeightPath);
+            if (_brushGeneratedCache == null)
+            {
+                Debug.LogError("[TerrainTool] generatedHeightMap が見つかりません。先に Generate を実行してください。");
+                _brushActive = false;
+                return;
+            }
+
+            _brushDeltaCache = HeightMapIO.Load(_persistentData.manualDeltaPath);
+            if (_brushDeltaCache == null)
+                _brushDeltaCache = new float[_profile.heightmapResolution * _profile.heightmapResolution];
+        }
+
+        private void FlushBrushCaches()
+        {
+            if (_brushDeltaCache == null) return;
+
+            HeightMapIO.Save(_brushDeltaCache, _persistentData.manualDeltaPath);
+
+            TerrainApplier.Apply(
+                _targetTerrain,
+                _brushGeneratedCache,
+                _brushDeltaCache,
+                _profile.heightmapResolution,
+                _profile.tileSizeMeters,
+                _profile.heightScale);
+
+            Debug.Log("[TerrainTool] ブラシ編集を保存しました");
+            _brushGeneratedCache = null;
+            _brushDeltaCache = null;
+        }
+
+        private void OnSceneGUI(SceneView sceneView)
+        {
+            if (!_brushActive || _currentTab != Tab.Edit || _editInputMode != EditInputMode.SceneBrush)
+                return;
+            if (_targetTerrain == null || _profile == null || _brushGeneratedCache == null)
+                return;
+
+            Event e = Event.current;
+
+            // Terrain 平面への Raycast
+            Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+            Plane terrainPlane = new Plane(Vector3.up, _targetTerrain.transform.position);
+            if (!terrainPlane.Raycast(ray, out float dist))
+                return;
+
+            _brushWorldPos = ray.GetPoint(dist);
+
+            // ブラシ円を描画
+            Handles.color = new Color(0.2f, 0.8f, 1f, 0.5f);
+            Handles.DrawWireDisc(_brushWorldPos, Vector3.up, _brushRadius);
+            Handles.color = new Color(0.2f, 0.8f, 1f, 0.1f);
+            Handles.DrawSolidDisc(_brushWorldPos, Vector3.up, _brushRadius);
+
+            // マウスボタン押下中に塗る（最小移動距離で間引き）
+            bool isMouseDown = e.type == EventType.MouseDown && e.button == 0;
+            bool isMouseDrag = e.type == EventType.MouseDrag && e.button == 0;
+
+            if (isMouseDown || isMouseDrag)
+            {
+                float minStep = _brushRadius * 0.25f;
+                if (isMouseDown || Vector3.Distance(_brushWorldPos, _brushLastApplyPos) >= minStep)
+                {
+                    _brushLastApplyPos = _brushWorldPos;
+
+                    ManualDeltaEditor.Apply(
+                        _brushDeltaCache,
+                        _brushGeneratedCache,
+                        _profile.heightmapResolution,
+                        _profile.tileSizeMeters,
+                        new Vector2(_tileOriginX, _tileOriginZ),
+                        _profile.heightScale,
+                        _editMode,
+                        ShapeType.Circle,
+                        _brushWorldPos.x,
+                        _brushWorldPos.z,
+                        _brushRadius,
+                        0f, 0f,
+                        _editStrengthMeters,
+                        _editTargetHeightMeters,
+                        _editFalloff);
+
+                    // リアルタイムで Terrain に反映（保存は FlushBrushCaches で行う）
+                    TerrainApplier.Apply(
+                        _targetTerrain,
+                        _brushGeneratedCache,
+                        _brushDeltaCache,
+                        _profile.heightmapResolution,
+                        _profile.tileSizeMeters,
+                        _profile.heightScale);
+
+                    e.Use();
+                }
+            }
+
+            // 常にリペイント（ブラシカーソル追従）
+            sceneView.Repaint();
+            Repaint();
         }
 
         // ================================================================
