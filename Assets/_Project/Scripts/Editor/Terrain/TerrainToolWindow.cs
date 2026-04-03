@@ -8,6 +8,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
     public class TerrainToolWindow : EditorWindow
     {
         private enum Tab { Generate = 0, Batch = 1, Edit = 2, Mask = 3, Vegetation = 4 }
+        // Mask / Vegetation は凍結中（Issue: MaskOverlay_HDRP_issue / Phase4_issue）
 
         private Tab _currentTab = Tab.Generate;
 
@@ -40,11 +41,14 @@ namespace LibraryOfGamecraft.Terrain.Editor
         private float         _maskRectWidth  = 100f;
         private float         _maskRectHeight = 100f;
         // Phase 3B: Scene Brush
-        private float         _maskBrushRadius      = 50f;
-        private bool          _maskBrushActive      = false;
-        private Vector3       _maskBrushWorldPos;
-        private Vector3       _maskBrushLastApplyPos;
-        private float[]       _maskCache;
+        private float              _maskBrushRadius      = 50f;
+        private bool               _maskBrushActive      = false;
+        private Vector3            _maskBrushWorldPos;
+        private Vector3            _maskBrushLastApplyPos;
+        private float[]            _maskCache;
+        // オーバーレイ
+        private MaskOverlayRenderer _maskOverlay      = new MaskOverlayRenderer();
+        private MaskType            _maskTypePrev     = (MaskType)(-1); // 変更検知用
 
         // Phase 2B: Scene Brush
         private float         _brushRadius          = 50f;
@@ -79,13 +83,12 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _batchConfigSO = new SerializedObject(_batchConfig);
 
             SceneView.duringSceneGui += OnSceneGUI;
-            SceneView.duringSceneGui += OnMaskSceneGUI;
+            // OnMaskSceneGUI は Mask オーバーレイ凍結中につき登録しない
         }
 
         private void OnDisable()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.duringSceneGui -= OnMaskSceneGUI;
             _brushActive = false;
             _brushGeneratedCache = null;
             _brushDeltaCache = null;
@@ -94,6 +97,8 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 FlushMaskBrushCache();
                 _maskBrushActive = false;
             }
+            _maskOverlay.Clear();
+            _maskOverlay.Dispose();
         }
 
         [MenuItem("Tools/LibraryOfGamecraft/Terrain Tool")]
@@ -121,10 +126,9 @@ namespace LibraryOfGamecraft.Terrain.Editor
                     DrawEditTab();
                     break;
                 case Tab.Mask:
-                    DrawMaskTab();
-                    break;
+                case Tab.Vegetation:
                 default:
-                    EditorGUILayout.HelpBox("Coming Soon", MessageType.Info);
+                    EditorGUILayout.HelpBox("Coming Soon（凍結中）", MessageType.Info);
                     break;
             }
         }
@@ -381,9 +385,11 @@ namespace LibraryOfGamecraft.Terrain.Editor
         }
 
         // ================================================================
-        //  Mask タブ (Phase 3A: Numeric Range / Phase 3B: Scene Brush)
+        //  Mask タブ (Phase 3A / 3B) — 凍結中
+        //  Issue: Assets/_Project/Docs/Issues/MaskOverlay_HDRP_issue.md
         // ================================================================
 
+#pragma warning disable IDE0051
         private void DrawMaskTab()
         {
             EditorGUILayout.LabelField("Mask Input Mode", EditorStyles.boldLabel);
@@ -396,6 +402,13 @@ namespace LibraryOfGamecraft.Terrain.Editor
             _maskValue   = EditorGUILayout.Slider("Mask Value", _maskValue, 0f, 1f);
             _maskFalloff = EditorGUILayout.Slider("Falloff", _maskFalloff, 0f, 1f);
             EditorGUILayout.Space();
+
+            // マスク種別が変わったらオーバーレイを再読み込み
+            if (_maskType != _maskTypePrev)
+            {
+                _maskTypePrev = _maskType;
+                RefreshMaskOverlay();
+            }
 
             switch (_maskInputMode)
             {
@@ -464,6 +477,8 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _maskFalloff);
 
             HeightMapIO.Save(mask, path);
+            RefreshMaskOverlay();
+            SceneView.RepaintAll();
             Debug.Log($"[TerrainTool] {_maskType} Mask Apply 完了");
         }
 
@@ -509,6 +524,9 @@ namespace LibraryOfGamecraft.Terrain.Editor
 
             int size = _profile.heightmapResolution * _profile.heightmapResolution;
             _maskCache = HeightMapIO.Load(path) ?? new float[size];
+
+            // ブラシ開始時にオーバーレイを最新状態に同期
+            RefreshMaskOverlay();
         }
 
         private void FlushMaskBrushCache()
@@ -521,10 +539,54 @@ namespace LibraryOfGamecraft.Terrain.Editor
 
             Debug.Log($"[TerrainTool] {_maskType} マスクブラシ編集を保存しました");
             _maskCache = null;
+            RefreshMaskOverlay();
+            SceneView.RepaintAll();
+        }
+
+        private void RefreshMaskOverlay()
+        {
+            if (_persistentData == null || _profile == null)
+            {
+                _maskOverlay.Clear();
+                return;
+            }
+
+            string path = GetMaskPath(_maskType);
+            if (string.IsNullOrEmpty(path))
+            {
+                _maskOverlay.Clear();
+                return;
+            }
+
+            float[] mask = HeightMapIO.Load(path);
+            if (mask == null)
+            {
+                _maskOverlay.Clear();
+                return;
+            }
+
+            Color color = _maskType switch
+            {
+                MaskType.Protected    => new Color(1f, 0.3f, 0.3f),
+                MaskType.NoVegetation => new Color(1f, 0.8f, 0f),
+                MaskType.Flatten      => new Color(0.3f, 1f, 0.3f),
+                _                     => Color.white,
+            };
+
+            _maskOverlay.SetMask(mask, _profile.heightmapResolution, color);
         }
 
         private void OnMaskSceneGUI(SceneView sceneView)
         {
+            // Mask タブを開いている間は常にオーバーレイを描画
+            if (_currentTab == Tab.Mask && _targetTerrain != null && _profile != null)
+            {
+                _maskOverlay.Draw(
+                    _targetTerrain,
+                    _profile.tileSizeMeters,
+                    new Vector2(_tileOriginX, _tileOriginZ));
+            }
+
             if (!_maskBrushActive || _currentTab != Tab.Mask || _maskInputMode != MaskInputMode.SceneBrush)
                 return;
             if (_targetTerrain == null || _profile == null || _maskCache == null)
@@ -576,6 +638,16 @@ namespace LibraryOfGamecraft.Terrain.Editor
                         _maskValue,
                         _maskFalloff);
 
+                    // ブラシ中はキャッシュからリアルタイムでオーバーレイを更新
+                    Color color = _maskType switch
+                    {
+                        MaskType.Protected    => new Color(1f, 0.3f, 0.3f),
+                        MaskType.NoVegetation => new Color(1f, 0.8f, 0f),
+                        MaskType.Flatten      => new Color(0.3f, 1f, 0.3f),
+                        _                     => Color.white,
+                    };
+                    _maskOverlay.SetMask(_maskCache, _profile.heightmapResolution, color);
+
                     e.Use();
                 }
             }
@@ -584,6 +656,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
             Repaint();
         }
 
+#pragma warning restore IDE0051
         private string GetMaskPath(MaskType maskType)
         {
             return maskType switch
