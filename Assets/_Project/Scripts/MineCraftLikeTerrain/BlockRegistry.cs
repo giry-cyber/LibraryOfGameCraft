@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// ブロック1種類の定義。色と UV アトラスタイル位置を持つ。

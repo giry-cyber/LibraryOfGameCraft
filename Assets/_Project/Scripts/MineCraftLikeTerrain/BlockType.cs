@@ -1,4 +1,4 @@
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>ブロック種別。byte で保存してメモリを節約する。</summary>
     public enum BlockType : byte

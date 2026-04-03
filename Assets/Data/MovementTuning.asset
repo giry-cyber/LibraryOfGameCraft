@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cbeebf2b8f29c44b6c8f064dca3cab, type: 3}
   m_Name: MovementTuning
   m_EditorClassIdentifier: 
-  MoveSpeed: 20
+  MoveSpeed: 15
   Acceleration: 20
   Deceleration: 20
   MaxSlopeAngle: 45
-  SlideAngle: 55
+  SlideAngle: 45
   StepHeight: 0.4
-  GroundCheckRadius: 0.25
-  GroundCheckDistance: 0.15
-  GroundedThreshold: 0.05
+  GroundCheckRadius: 0.5
+  GroundCheckDistance: 0.5
+  GroundedThreshold: 0.5
   MinGroundDotProduct: 0.5
   GroundSnapDistance: 0.5
   EnableWallSliding: 1

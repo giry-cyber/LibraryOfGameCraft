@@ -1,7 +1,7 @@
 using UnityEngine;
 using LibraryOfGamecraft.Noise;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// プロシージャル地形生成のパラメータ設定。

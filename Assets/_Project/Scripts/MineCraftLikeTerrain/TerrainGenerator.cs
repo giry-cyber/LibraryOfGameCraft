@@ -1,7 +1,7 @@
 using UnityEngine;
 using LibraryOfGamecraft.Noise;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// ノイズを使いチャンクのボクセルデータを生成する静的クラス。

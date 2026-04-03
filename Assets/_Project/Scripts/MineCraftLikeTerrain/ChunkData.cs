@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LibraryOfGamecraft.Terrain
+namespace LibraryOfGamecraft.MineCraftLikeTerrain
 {
     /// <summary>
     /// チャンク1つ分のボクセルデータ (純粋データ、MonoBehaviour なし)。

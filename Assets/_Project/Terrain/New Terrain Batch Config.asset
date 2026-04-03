@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e81236c9905ec4f8a5dbc26eb0e9c7, type: 3}
+  m_Name: New Terrain Batch Config
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 9f45c16bbd0849341a0fd5e9a9cdfd4b, type: 2}
+  tiles:
+  - label: tile_0_-1
+    scenePath: Assets/_Project/Scenes/SubScene/World_0_-1.unity
+    tileOrigin: {x: 0, y: -512}
+    persistentData: {fileID: 11400000, guid: 0043948ffd3777d47ad2fd1b52610a74, type: 2}
+  - label: tile_0_0
+    scenePath: Assets/_Project/Scenes/SubScene/World_0_0.unity
+    tileOrigin: {x: 0, y: 0}
+    persistentData: {fileID: 11400000, guid: eb77d2c87ded62742b9ec4659f24b70b, type: 2}
+  - label: tile_0_1
+    scenePath: Assets/_Project/Scenes/SubScene/World_0_1.unity
+    tileOrigin: {x: 0, y: 512}
+    persistentData: {fileID: 11400000, guid: 560cb64e3246b46418026f4592183b98, type: 2}
+  - label: tile_1_-1
+    scenePath: Assets/_Project/Scenes/SubScene/World_1_-1.unity
+    tileOrigin: {x: 512, y: -512}
+    persistentData: {fileID: 11400000, guid: ac4a8b65c2e3a624ab36f88ff87e5fad, type: 2}
+  - label: tile_1_0
+    scenePath: Assets/_Project/Scenes/SubScene/World_1_0.unity
+    tileOrigin: {x: 512, y: 0}
+    persistentData: {fileID: 11400000, guid: 26fbcf152d5ae0e4db6c234b33e717b3, type: 2}
+  - label: tile_1_1
+    scenePath: Assets/_Project/Scenes/SubScene/World_1_1.unity
+    tileOrigin: {x: 512, y: 512}
+    persistentData: {fileID: 11400000, guid: d8538f1ce2d3c4746bd0023f9d0ec624, type: 2}
