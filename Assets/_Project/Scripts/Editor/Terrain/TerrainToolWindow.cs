@@ -7,7 +7,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
 {
     public class TerrainToolWindow : EditorWindow
     {
-        private enum Tab { Generate = 0, Batch = 1, Edit = 2, Vegetation = 3 }
+        private enum Tab { Generate = 0, Batch = 1, Edit = 2, Mask = 3, Vegetation = 4 }
 
         private Tab _currentTab = Tab.Generate;
 
@@ -25,6 +25,26 @@ namespace LibraryOfGamecraft.Terrain.Editor
         private float         _editRadius     = 50f;
         private float         _editRectWidth  = 100f;
         private float         _editRectHeight = 100f;
+
+        // ---- Mask タブ ----
+        private enum MaskInputMode { NumericRange, SceneBrush }
+        private MaskInputMode _maskInputMode  = MaskInputMode.NumericRange;
+        private MaskType      _maskType       = MaskType.Protected;
+        private float         _maskValue      = 1f;
+        private float         _maskFalloff    = 0.5f;
+        // Phase 3A: Numeric Range
+        private float         _maskCenterX    = 0f;
+        private float         _maskCenterZ    = 0f;
+        private ShapeType     _maskShapeType  = ShapeType.Circle;
+        private float         _maskRadius     = 50f;
+        private float         _maskRectWidth  = 100f;
+        private float         _maskRectHeight = 100f;
+        // Phase 3B: Scene Brush
+        private float         _maskBrushRadius      = 50f;
+        private bool          _maskBrushActive      = false;
+        private Vector3       _maskBrushWorldPos;
+        private Vector3       _maskBrushLastApplyPos;
+        private float[]       _maskCache;
 
         // Phase 2B: Scene Brush
         private float         _brushRadius          = 50f;
@@ -48,7 +68,7 @@ namespace LibraryOfGamecraft.Terrain.Editor
         private SerializedObject _batchConfigSO;
         private Vector2 _batchScrollPos;
 
-        private static readonly string[] TabLabels = { "Generate", "Batch", "Edit", "Vegetation" };
+        private static readonly string[] TabLabels = { "Generate", "Batch", "Edit", "Mask", "Vegetation" };
 
         private void OnEnable()
         {
@@ -59,14 +79,21 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _batchConfigSO = new SerializedObject(_batchConfig);
 
             SceneView.duringSceneGui += OnSceneGUI;
+            SceneView.duringSceneGui += OnMaskSceneGUI;
         }
 
         private void OnDisable()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.duringSceneGui -= OnMaskSceneGUI;
             _brushActive = false;
             _brushGeneratedCache = null;
             _brushDeltaCache = null;
+            if (_maskBrushActive)
+            {
+                FlushMaskBrushCache();
+                _maskBrushActive = false;
+            }
         }
 
         [MenuItem("Tools/LibraryOfGamecraft/Terrain Tool")]
@@ -92,6 +119,9 @@ namespace LibraryOfGamecraft.Terrain.Editor
                     break;
                 case Tab.Edit:
                     DrawEditTab();
+                    break;
+                case Tab.Mask:
+                    DrawMaskTab();
                     break;
                 default:
                     EditorGUILayout.HelpBox("Coming Soon", MessageType.Info);
@@ -348,6 +378,221 @@ namespace LibraryOfGamecraft.Terrain.Editor
                 _profile.heightScale);
 
             Debug.Log("[TerrainTool] Edit Apply 完了");
+        }
+
+        // ================================================================
+        //  Mask タブ (Phase 3A: Numeric Range / Phase 3B: Scene Brush)
+        // ================================================================
+
+        private void DrawMaskTab()
+        {
+            EditorGUILayout.LabelField("Mask Input Mode", EditorStyles.boldLabel);
+            _maskInputMode = (MaskInputMode)GUILayout.Toolbar((int)_maskInputMode,
+                new[] { "Numeric Range", "Scene Brush" });
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Common", EditorStyles.boldLabel);
+            _maskType    = (MaskType)EditorGUILayout.EnumPopup("Mask Type", _maskType);
+            _maskValue   = EditorGUILayout.Slider("Mask Value", _maskValue, 0f, 1f);
+            _maskFalloff = EditorGUILayout.Slider("Falloff", _maskFalloff, 0f, 1f);
+            EditorGUILayout.Space();
+
+            switch (_maskInputMode)
+            {
+                case MaskInputMode.NumericRange:
+                    DrawMaskNumericRangeSection();
+                    break;
+                case MaskInputMode.SceneBrush:
+                    DrawMaskSceneBrushSection();
+                    break;
+            }
+        }
+
+        private void DrawMaskNumericRangeSection()
+        {
+            EditorGUILayout.LabelField("Numeric Range Edit", EditorStyles.boldLabel);
+
+            _maskCenterX   = EditorGUILayout.FloatField("Center X (m)", _maskCenterX);
+            _maskCenterZ   = EditorGUILayout.FloatField("Center Z (m)", _maskCenterZ);
+            _maskShapeType = (ShapeType)EditorGUILayout.EnumPopup("Shape", _maskShapeType);
+
+            if (_maskShapeType == ShapeType.Circle)
+                _maskRadius = EditorGUILayout.FloatField("Radius (m)", _maskRadius);
+            else
+            {
+                _maskRectWidth  = EditorGUILayout.FloatField("Width (m)",  _maskRectWidth);
+                _maskRectHeight = EditorGUILayout.FloatField("Height (m)", _maskRectHeight);
+            }
+
+            EditorGUILayout.Space();
+
+            bool canApply = _targetTerrain != null && _persistentData != null && _profile != null;
+            if (!canApply)
+                EditorGUILayout.HelpBox("Generate タブで Terrain・Persistent Data・Profile を設定してください", MessageType.Warning);
+
+            using (new EditorGUI.DisabledScope(!canApply))
+            {
+                if (GUILayout.Button("Apply Mask", GUILayout.Height(32f)))
+                    ExecuteMaskApply();
+            }
+        }
+
+        private void ExecuteMaskApply()
+        {
+            string path = GetMaskPath(_maskType);
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogError($"[TerrainTool] {_maskType} のパスが未設定です。Persistent Data を確認してください。");
+                return;
+            }
+
+            int size = _profile.heightmapResolution * _profile.heightmapResolution;
+            float[] mask = HeightMapIO.Load(path) ?? new float[size];
+
+            MaskEditor.Apply(
+                mask,
+                _profile.heightmapResolution,
+                _profile.tileSizeMeters,
+                new Vector2(_tileOriginX, _tileOriginZ),
+                _maskShapeType,
+                _maskCenterX,
+                _maskCenterZ,
+                _maskRadius,
+                _maskRectWidth,
+                _maskRectHeight,
+                _maskValue,
+                _maskFalloff);
+
+            HeightMapIO.Save(mask, path);
+            Debug.Log($"[TerrainTool] {_maskType} Mask Apply 完了");
+        }
+
+        private void DrawMaskSceneBrushSection()
+        {
+            EditorGUILayout.LabelField("Scene Brush Edit", EditorStyles.boldLabel);
+            _maskBrushRadius = EditorGUILayout.FloatField("Brush Radius (m)", _maskBrushRadius);
+
+            bool canBrush = _targetTerrain != null && _persistentData != null && _profile != null;
+            if (!canBrush)
+            {
+                EditorGUILayout.HelpBox("Generate タブで Terrain・Persistent Data・Profile を設定してください", MessageType.Warning);
+                return;
+            }
+
+            EditorGUILayout.Space();
+
+            string toggleLabel = _maskBrushActive ? "ブラシ無効化" : "ブラシ有効化";
+            if (GUILayout.Button(toggleLabel, GUILayout.Height(32f)))
+            {
+                _maskBrushActive = !_maskBrushActive;
+                if (_maskBrushActive)
+                    LoadMaskBrushCache();
+                else
+                    FlushMaskBrushCache();
+
+                SceneView.RepaintAll();
+            }
+
+            if (_maskBrushActive)
+                EditorGUILayout.HelpBox("SceneView でマウスドラッグして塗ってください。\nブラシを無効化すると保存されます。", MessageType.Info);
+        }
+
+        private void LoadMaskBrushCache()
+        {
+            string path = GetMaskPath(_maskType);
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogError($"[TerrainTool] {_maskType} のパスが未設定です。");
+                _maskBrushActive = false;
+                return;
+            }
+
+            int size = _profile.heightmapResolution * _profile.heightmapResolution;
+            _maskCache = HeightMapIO.Load(path) ?? new float[size];
+        }
+
+        private void FlushMaskBrushCache()
+        {
+            if (_maskCache == null) return;
+
+            string path = GetMaskPath(_maskType);
+            if (!string.IsNullOrEmpty(path))
+                HeightMapIO.Save(_maskCache, path);
+
+            Debug.Log($"[TerrainTool] {_maskType} マスクブラシ編集を保存しました");
+            _maskCache = null;
+        }
+
+        private void OnMaskSceneGUI(SceneView sceneView)
+        {
+            if (!_maskBrushActive || _currentTab != Tab.Mask || _maskInputMode != MaskInputMode.SceneBrush)
+                return;
+            if (_targetTerrain == null || _profile == null || _maskCache == null)
+                return;
+
+            Event e = Event.current;
+
+            Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+            Plane terrainPlane = new Plane(Vector3.up, _targetTerrain.transform.position);
+            if (!terrainPlane.Raycast(ray, out float dist))
+                return;
+
+            _maskBrushWorldPos = ray.GetPoint(dist);
+
+            // マスク種別ごとにブラシ色を変える
+            Color brushColor = _maskType switch
+            {
+                MaskType.Protected      => new Color(1f, 0.3f, 0.3f, 0.5f),
+                MaskType.NoVegetation   => new Color(1f, 0.8f, 0f, 0.5f),
+                MaskType.Flatten        => new Color(0.3f, 1f, 0.3f, 0.5f),
+                _                       => new Color(1f, 1f, 1f, 0.5f),
+            };
+
+            Handles.color = brushColor;
+            Handles.DrawWireDisc(_maskBrushWorldPos, Vector3.up, _maskBrushRadius);
+            Handles.color = new Color(brushColor.r, brushColor.g, brushColor.b, 0.1f);
+            Handles.DrawSolidDisc(_maskBrushWorldPos, Vector3.up, _maskBrushRadius);
+
+            bool isMouseDown = e.type == EventType.MouseDown && e.button == 0;
+            bool isMouseDrag = e.type == EventType.MouseDrag && e.button == 0;
+
+            if (isMouseDown || isMouseDrag)
+            {
+                float minStep = _maskBrushRadius * 0.25f;
+                if (isMouseDown || Vector3.Distance(_maskBrushWorldPos, _maskBrushLastApplyPos) >= minStep)
+                {
+                    _maskBrushLastApplyPos = _maskBrushWorldPos;
+
+                    MaskEditor.Apply(
+                        _maskCache,
+                        _profile.heightmapResolution,
+                        _profile.tileSizeMeters,
+                        new Vector2(_tileOriginX, _tileOriginZ),
+                        ShapeType.Circle,
+                        _maskBrushWorldPos.x,
+                        _maskBrushWorldPos.z,
+                        _maskBrushRadius,
+                        0f, 0f,
+                        _maskValue,
+                        _maskFalloff);
+
+                    e.Use();
+                }
+            }
+
+            sceneView.Repaint();
+            Repaint();
+        }
+
+        private string GetMaskPath(MaskType maskType)
+        {
+            return maskType switch
+            {
+                MaskType.Protected    => _persistentData.protectedMaskPath,
+                MaskType.NoVegetation => _persistentData.noVegetationMaskPath,
+                MaskType.Flatten      => _persistentData.flattenMaskPath,
+                _                     => null,
+            };
         }
 
         private void DrawSceneBrushSection()

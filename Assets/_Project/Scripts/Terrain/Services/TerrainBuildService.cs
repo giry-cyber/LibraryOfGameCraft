@@ -61,6 +61,23 @@ namespace LibraryOfGamecraft.Terrain
                 manualDelta = new float[size];
                 for (int i = 0; i < size; i++)
                     manualDelta[i] = currentTerrain[i] - oldGenerated[i];
+
+                // protectedMask が存在する場合: 保護領域の最終高さを維持する
+                // 保護された delta = currentTerrain[i] - newGenerated[i]（再生成後も高さ変わらず）
+                float[] protectedMask = null;
+                if (!string.IsNullOrEmpty(persistentData.protectedMaskPath))
+                    protectedMask = HeightMapIO.Load(persistentData.protectedMaskPath);
+
+                if (protectedMask != null)
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        float pm = protectedMask[i];
+                        if (pm <= 0f) continue;
+                        float protectedDelta = currentTerrain[i] - generated[i];
+                        manualDelta[i] = Mathf.Lerp(manualDelta[i], protectedDelta, pm);
+                    }
+                }
             }
 #endif
 
