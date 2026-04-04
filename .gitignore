@@ -63,3 +63,4 @@ node_modules/
 # 有料・権利不明アセット（ローカルのみ、リポジトリには含めない）
 Assets/ThirdParty/*
 !Assets/ThirdParty/.gitkeep
+Assets/Wispy Sky/
