@@ -23,4 +23,4 @@ MonoBehaviour:
   GroundedThreshold: 0.5
   MinGroundDotProduct: 0.5
   GroundSnapDistance: 0.5
-  EnableWallSliding: 1
+  EnableWallSliding: 0
