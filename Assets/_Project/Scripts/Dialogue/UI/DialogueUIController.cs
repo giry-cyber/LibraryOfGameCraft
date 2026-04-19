@@ -35,23 +35,24 @@ namespace LibraryOfGamecraft.Dialogue
 
         private void Awake()
         {
-            _dialogueWindow?.SetActive(false);
-            _choicePanel?.SetActive(false);
-            _logPanel?.SetActive(false);
-            _nextIndicator?.SetActive(false);
-            _autoIndicator?.SetActive(false);
-            _skipIndicator?.SetActive(false);
+            // Unity の UnityEngine.Object は ?. 演算子が機能しないため明示的に null チェックする
+            SetActiveIfNotNull(_dialogueWindow, false);
+            SetActiveIfNotNull(_choicePanel, false);
+            SetActiveIfNotNull(_logPanel, false);
+            SetActiveIfNotNull(_nextIndicator, false);
+            SetActiveIfNotNull(_autoIndicator, false);
+            SetActiveIfNotNull(_skipIndicator, false);
         }
 
         public void Show()
         {
-            _dialogueWindow?.SetActive(true);
+            SetActiveIfNotNull(_dialogueWindow, true);
         }
 
         public void Hide()
         {
-            _dialogueWindow?.SetActive(false);
-            _choicePanel?.SetActive(false);
+            SetActiveIfNotNull(_dialogueWindow, false);
+            SetActiveIfNotNull(_choicePanel, false);
         }
 
         public void SetSpeakerName(string name)
@@ -60,14 +61,12 @@ namespace LibraryOfGamecraft.Dialogue
                 _speakerNameText.text = name ?? string.Empty;
         }
 
-        // 文字送り中：部分テキストを表示
         public void SetTextPartial(string text)
         {
             if (_dialogueText != null)
                 _dialogueText.text = text;
         }
 
-        // 全文を即時表示
         public void SetTextInstant(string text)
         {
             if (_dialogueText != null)
@@ -76,17 +75,17 @@ namespace LibraryOfGamecraft.Dialogue
 
         public void ShowNextIndicator(bool show)
         {
-            _nextIndicator?.SetActive(show);
+            SetActiveIfNotNull(_nextIndicator, show);
         }
 
         public void SetAutoIndicator(bool active)
         {
-            _autoIndicator?.SetActive(active);
+            SetActiveIfNotNull(_autoIndicator, active);
         }
 
         public void SetSkipIndicator(bool active)
         {
-            _skipIndicator?.SetActive(active);
+            SetActiveIfNotNull(_skipIndicator, active);
         }
 
         // ─────────────────────────────────────
@@ -96,7 +95,7 @@ namespace LibraryOfGamecraft.Dialogue
         public void ShowChoices(ChoiceItemState[] choices, string promptText)
         {
             ClearChoiceButtons();
-            _choicePanel?.SetActive(true);
+            SetActiveIfNotNull(_choicePanel, true);
 
             if (_choiceButtonPrefab == null || _choiceContainer == null) return;
 
@@ -111,7 +110,6 @@ namespace LibraryOfGamecraft.Dialogue
                 if (label != null)
                     label.text = state.Choice.ChoiceText;
 
-                // 選択不可の場合はグレーアウト
                 var button = go.GetComponent<Button>();
                 if (button != null)
                     button.interactable = state.Enabled;
@@ -125,7 +123,7 @@ namespace LibraryOfGamecraft.Dialogue
         public void HideChoices()
         {
             ClearChoiceButtons();
-            _choicePanel?.SetActive(false);
+            SetActiveIfNotNull(_choicePanel, false);
         }
 
         public void SetChoiceCursor(int index)
@@ -177,7 +175,7 @@ namespace LibraryOfGamecraft.Dialogue
         public void HideLog()
         {
             ClearLogEntries();
-            _logPanel?.SetActive(false);
+            if (_logPanel != null) _logPanel.SetActive(false);
         }
 
         private void ClearLogEntries()
@@ -185,6 +183,11 @@ namespace LibraryOfGamecraft.Dialogue
             if (_logContainer == null) return;
             foreach (Transform child in _logContainer)
                 Destroy(child.gameObject);
+        }
+
+        private static void SetActiveIfNotNull(GameObject go, bool active)
+        {
+            if (go != null) go.SetActive(active);
         }
     }
 }

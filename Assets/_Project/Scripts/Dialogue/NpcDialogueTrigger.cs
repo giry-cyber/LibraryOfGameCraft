@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LibraryOfGamecraft.Dialogue
 {
@@ -10,7 +11,6 @@ namespace LibraryOfGamecraft.Dialogue
     [RequireComponent(typeof(Collider))]
     public class NpcDialogueTrigger : MonoBehaviour
     {
-        [SerializeField] private DialogueManager _dialogueManager;
         [SerializeField] private List<DialogueSet> _dialogueSets;
         [SerializeField] private string _playerTag = "Player";
 
@@ -31,10 +31,13 @@ namespace LibraryOfGamecraft.Dialogue
         private void Update()
         {
             if (!_playerInRange) return;
-            if (_dialogueManager == null || _dialogueManager.IsInDialogue) return;
 
-            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
-                _dialogueManager.StartDialogue(_dialogueSets);
+            var manager = DialogueManager.Instance;
+            if (manager == null || manager.IsInDialogue) return;
+
+            var kb = Keyboard.current;
+            if (kb != null && (kb.eKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame))
+                manager.StartDialogue(_dialogueSets);
         }
     }
 }

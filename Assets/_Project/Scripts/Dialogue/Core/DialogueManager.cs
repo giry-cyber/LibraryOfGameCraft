@@ -2,15 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LibraryOfGamecraft.Dialogue
 {
     /// <summary>
     /// 会話システム全体の状態管理・進行制御を担うメインクラス。
-    /// シーンに1つ配置し、DialogueUIControllerを紐付けて使用する。
+    /// シーンをまたいで永続するシングルトン。最初のシーンに1つ配置する。
     /// </summary>
     public class DialogueManager : MonoBehaviour
     {
+        public static DialogueManager Instance { get; private set; }
+
         [SerializeField] private DialogueUIController _uiController;
         [SerializeField] private DialogueFlagDatabase _flagDatabase;
 
@@ -55,6 +58,15 @@ namespace LibraryOfGamecraft.Dialogue
 
         private void Awake()
         {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            transform.SetParent(null); // DontDestroyOnLoad はルートGameObjectのみ有効
+            DontDestroyOnLoad(gameObject);
+
             _flagService = new DialogueFlagService();
             _historyService = new DialogueHistoryService();
             _conditionEvaluator = new DialogueConditionEvaluator(_flagService, _historyService);
@@ -70,22 +82,29 @@ namespace LibraryOfGamecraft.Dialogue
         {
             if (_state == DialogueState.Idle) return;
 
-            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+            var kb = Keyboard.current;
+            if (kb == null) return;
+
+            // 決定・次送り（プレイヤーのインタラクトキーに合わせて E キー）
+            if (kb.eKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame)
             {
                 _advancePressed = true;
                 _choiceConfirmPressed = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            // 選択肢カーソル移動
+            if (kb.upArrowKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame)
                 _choiceUpPressed = true;
 
-            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            if (kb.downArrowKey.wasPressedThisFrame || kb.sKey.wasPressedThisFrame)
                 _choiceDownPressed = true;
 
-            if (Input.GetKeyDown(KeyCode.A))
+            // オート切替: Tab
+            if (kb.tabKey.wasPressedThisFrame)
                 ToggleAutoMode();
 
-            if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+            // スキップ: LeftShift 長押し中は毎フレームスキップ継続
+            if (kb.leftShiftKey.wasPressedThisFrame)
                 ToggleSkipMode();
         }
 
