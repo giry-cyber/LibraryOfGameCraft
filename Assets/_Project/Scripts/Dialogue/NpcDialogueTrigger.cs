@@ -6,7 +6,7 @@ namespace LibraryOfGamecraft.Dialogue
 {
     /// <summary>
     /// NPCに付与するトリガーコンポーネント。
-    /// プレイヤーが範囲内でZキー（決定）を押すと会話を開始する。
+    /// 入力処理は行わず、DialogueInteractController に候補として登録するだけ。
     /// </summary>
     [RequireComponent(typeof(Collider))]
     public class NpcDialogueTrigger : MonoBehaviour
@@ -14,30 +14,41 @@ namespace LibraryOfGamecraft.Dialogue
         [SerializeField] private List<DialogueSet> _dialogueSets;
         [SerializeField] private string _playerTag = "Player";
 
-        private bool _playerInRange;
+        [Header("頭上プロンプト")]
+        [SerializeField] private GameObject _interactPrompt;
+
+        public List<DialogueSet> DialogueSets => _dialogueSets;
+
+        private void Awake()
+        {
+            if (_interactPrompt != null)
+                _interactPrompt.SetActive(false);
+        }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag(_playerTag))
-                _playerInRange = true;
+            if (!other.CompareTag(_playerTag)) return;
+            var controller = other.GetComponentInParent<DialogueInteractController>();
+            controller?.RegisterCandidate(this);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag(_playerTag))
-                _playerInRange = false;
+            if (!other.CompareTag(_playerTag)) return;
+            var controller = other.GetComponentInParent<DialogueInteractController>();
+            controller?.UnregisterCandidate(this);
+            ShowPrompt(false);
         }
 
-        private void Update()
+        public void ShowPrompt(bool show)
         {
-            if (!_playerInRange) return;
+            if (_interactPrompt != null)
+                _interactPrompt.SetActive(show);
+        }
 
-            var manager = DialogueManager.Instance;
-            if (manager == null || manager.IsInDialogue) return;
-
-            var kb = Keyboard.current;
-            if (kb != null && (kb.eKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame))
-                manager.StartDialogue(_dialogueSets);
+        public void StartDialogue()
+        {
+            DialogueManager.Instance?.StartDialogue(_dialogueSets);
         }
     }
 }
