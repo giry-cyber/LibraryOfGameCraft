@@ -16,9 +16,9 @@ MonoBehaviour:
   tileSizeMeters: 512
   heightmapResolution: 513
   heightScale: 50
-  noiseScale: 0.005
+  noiseScale: 0.002
   octaves: 4
-  persistence: 0.5
+  persistence: 0.306
   lacunarity: 2
   useDomainWarp: 0
   domainWarpStrength: 30

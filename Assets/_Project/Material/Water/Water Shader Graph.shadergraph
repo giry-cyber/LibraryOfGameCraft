@@ -826,7 +826,7 @@
             "m_Id": "9f090de569c04ba5b1951f6001764a9f"
         },
         {
-            "m_Id": "9ee2fe967e994d73853da38c447218e1"
+            "m_Id": "f601d88abfb243e6840ebd1fe80a4a64"
         }
     ],
     "synonyms": [],
@@ -1073,7 +1073,7 @@
             "m_Id": "b29d922251b24596a7a85feacee40f86"
         },
         {
-            "m_Id": "cb5f16119cff43c48d5b10538d45e25f"
+            "m_Id": "74ecda4cdb1b4a649c4fc123f9c9ad91"
         }
     ],
     "synonyms": [],
@@ -1092,8 +1092,8 @@
     "m_ObjectId": "2a0fd82c3d524d158f64f319b0dbb868",
     "m_Title": "Read From Simulation",
     "m_Position": {
-        "x": -556.0,
-        "y": 88.99996185302735
+        "x": -556.6666870117188,
+        "y": 89.33325958251953
     }
 }
 
@@ -1743,6 +1743,29 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+    "m_ObjectId": "74ecda4cdb1b4a649c4fc123f9c9ad91",
+    "m_Id": 1,
+    "m_DisplayName": "Displacement",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Displacement",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "7559f9e100c24c2a880fad893c98cd9b",
     "m_Id": 0,
@@ -1903,7 +1926,7 @@
             "m_Id": "cfe7d0cdd1e4470d964056ea56a10bd9"
         },
         {
-            "m_Id": "955ac9e330c24fb7b8ee80d9187e9b6b"
+            "m_Id": "c6454e74341741cc8456f313830634e4"
         },
         {
             "m_Id": "6436c8e76b3a41f3883a2f8a6a743eb7"
@@ -2078,21 +2101,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "955ac9e330c24fb7b8ee80d9187e9b6b",
-    "m_Id": 2,
-    "m_DisplayName": "HorizontalDisplacement",
-    "m_SlotType": 0,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "HorizontalDisplacement",
-    "m_StageCapability": 2,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "971cce9b5ca742adb0b87d49e979e8dd",
     "m_Id": 0,
@@ -2175,21 +2183,6 @@
 {
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "9ee2fe967e994d73853da38c447218e1",
-    "m_Id": 1,
-    "m_DisplayName": "HorizontalDisplacement",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "HorizontalDisplacement",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "9f090de569c04ba5b1951f6001764a9f",
     "m_Id": 0,
     "m_DisplayName": "LowFrequencyHeight",
@@ -2257,8 +2250,8 @@
     "m_ObjectId": "ab0657960ce64c418f090acef9b10025",
     "m_Title": "Read From Simulation",
     "m_Position": {
-        "x": 950.4500122070313,
-        "y": -185.89999389648438
+        "x": 949.3333129882813,
+        "y": -185.33334350585938
     }
 }
 
@@ -2703,16 +2696,24 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "cb5f16119cff43c48d5b10538d45e25f",
-    "m_Id": 1,
-    "m_DisplayName": "HorizontalDisplacement",
-    "m_SlotType": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+    "m_ObjectId": "c6454e74341741cc8456f313830634e4",
+    "m_Id": 2,
+    "m_DisplayName": "Displacement",
+    "m_SlotType": 0,
     "m_Hidden": false,
-    "m_ShaderOutputName": "HorizontalDisplacement",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
+    "m_ShaderOutputName": "Displacement",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
     "m_Labels": []
 }
 
@@ -3058,6 +3059,29 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+    "m_ObjectId": "f601d88abfb243e6840ebd1fe80a4a64",
+    "m_Id": 1,
+    "m_DisplayName": "Displacement",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Displacement",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_Labels": []
 }
 
 {
