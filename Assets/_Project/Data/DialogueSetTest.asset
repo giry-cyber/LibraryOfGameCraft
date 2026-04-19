@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5e1762eaceb244b95dbd44f120dff4, type: 3}
+  m_Name: DialogueSetTest
+  m_EditorClassIdentifier: 
+  DialogueSetId: test_npc_001
+  DisplayName: VillagerA
+  Priority: 0
+  StartConditions: []
+  StartNodeId: Node_001
+  Nodes:
+  - rid: 3891024761329287235
+  - rid: 3891024761329287239
+  - rid: 3891024761329287240
+  - rid: 3891024761329287241
+  - rid: 3891024761329287242
+  DefaultSkipPolicy: 1
+  DefaultAutoEnabled: 0
+  DefaultAutoDelay: 2
+  references:
+    version: 2
+    RefIds:
+    - rid: 3891024761329287235
+      type: {class: MessageNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_001
+        NodeType: 0
+        Comment: Can you help me?
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: Node_002
+        SpeakerId: 
+        SpeakerDisplayName: 
+        Text: Can you help me?
+        VoiceId: 
+        PortraitId: 
+        TextSpeedOverride: -1
+        AutoAdvanceEnabled: 0
+        AutoAdvanceDelay: 2
+    - rid: 3891024761329287239
+      type: {class: ChoiceNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_002
+        NodeType: 1
+        Comment: 
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: 
+        PromptText: Will you help him?
+        Choices:
+        - ChoiceId: Choice_001
+          ChoiceText: Yes
+          ShowConditions: []
+          EnableConditions: []
+          OnSelectedEvents: []
+          NextNodeId: Node_003
+        - ChoiceId: Choice_002
+          ChoiceText: No
+          ShowConditions: []
+          EnableConditions: []
+          OnSelectedEvents: []
+          NextNodeId: Node_004
+    - rid: 3891024761329287240
+      type: {class: MessageNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_003
+        NodeType: 0
+        Comment: 
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: Node_999
+        SpeakerId: 
+        SpeakerDisplayName: VillagerA
+        Text: Thank you!
+        VoiceId: 
+        PortraitId: 
+        TextSpeedOverride: -1
+        AutoAdvanceEnabled: 0
+        AutoAdvanceDelay: 2
+    - rid: 3891024761329287241
+      type: {class: MessageNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_004
+        NodeType: 0
+        Comment: 
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: Node_999
+        SpeakerId: 
+        SpeakerDisplayName: VillagerA
+        Text: Shit!
+        VoiceId: 
+        PortraitId: 
+        TextSpeedOverride: -1
+        AutoAdvanceEnabled: 0
+        AutoAdvanceDelay: 2
+    - rid: 3891024761329287242
+      type: {class: EndNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_999
+        NodeType: 6
+        Comment: 
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: 
+        EndReason: 
+        EndEvents: []
