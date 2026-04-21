@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace LibraryOfGamecraft.Dialogue
 {
@@ -38,5 +39,8 @@ namespace LibraryOfGamecraft.Dialogue
         public SkipPolicy SkipPolicy = SkipPolicy.Inherit;
         public LogPolicy LogPolicy = LogPolicy.Record;
         public string NextNodeId;
+
+        // グラフエディタ上の表示位置（ランタイムには影響しない）
+        [HideInInspector] public Vector2 Position;
     }
 }
