@@ -40,6 +40,14 @@ namespace LibraryOfGamecraft.Editor.Dialogue
         {
             serializedObject.Update();
 
+            // グラフエディタ起動ボタン
+            var prevColor = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(0.4f, 0.7f, 1.0f);
+            if (GUILayout.Button("▶  グラフエディタで開く", GUILayout.Height(28)))
+                DialogueGraphEditorWindow.Open((DialogueSet)target);
+            GUI.backgroundColor = prevColor;
+
+            EditorGUILayout.Space(4);
             DrawDefaultInspectorExcluding("Nodes");
             EditorGUILayout.Space(4);
 
