@@ -41,6 +41,7 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: Node_002
+        Position: {x: 0, y: 0}
         SpeakerId: 
         SpeakerDisplayName: 
         Text: Can you help me?
@@ -61,6 +62,7 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: 
+        Position: {x: 360, y: 0}
         PromptText: Will you help him?
         Choices:
         - ChoiceId: Choice_001
@@ -87,6 +89,7 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: Node_999
+        Position: {x: 720, y: 0}
         SpeakerId: 
         SpeakerDisplayName: VillagerA
         Text: Thank you!
@@ -107,6 +110,7 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: Node_999
+        Position: {x: 720, y: 200}
         SpeakerId: 
         SpeakerDisplayName: VillagerA
         Text: Shit!
@@ -127,5 +131,6 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: 
+        Position: {x: 1029.3334, y: 47.333332}
         EndReason: 
         EndEvents: []
