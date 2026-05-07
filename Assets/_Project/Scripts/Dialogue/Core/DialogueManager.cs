@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LibraryOfGamecraft.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -406,7 +407,18 @@ namespace LibraryOfGamecraft.Dialogue
         {
             SetState(DialogueState.ExecutingEvent);
             yield return _eventExecutor.ExecuteEvents(node.Events, isSkipping);
+            RaiseGameEvents(node.GameEvents, isSkipping);
             _nextNodeId = node.NextNodeId;
+        }
+
+        // GameEvent チャンネルへの発火（スキップ時も発火する。視覚演出の省略は受け取り側の責務）
+        private void RaiseGameEvents(GameEvent[] gameEvents, bool isSkipping)
+        {
+            if (gameEvents == null) return;
+            foreach (var e in gameEvents)
+            {
+                if (e != null) e.Raise();
+            }
         }
 
         private IEnumerator ProcessSequenceNode(SequenceNode node, bool isSkipping)

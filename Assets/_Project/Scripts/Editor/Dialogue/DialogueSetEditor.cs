@@ -177,6 +177,7 @@ namespace LibraryOfGamecraft.Editor.Dialogue
                 case DialogueNodeType.Event:
                     DrawFoldoutArray(nodeProp, "Events");
                     DrawField(nodeProp, "WaitMode");
+                    DrawFoldoutArray(nodeProp, "GameEvents");
                     break;
 
                 case DialogueNodeType.Sequence:
