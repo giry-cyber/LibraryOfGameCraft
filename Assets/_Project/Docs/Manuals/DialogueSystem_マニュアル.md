@@ -9,9 +9,10 @@
 5. [フラグシステム](#5-フラグシステム)
 6. [NPCセットアップ](#6-npcセットアップ)
 7. [イベントハンドラーの実装](#7-イベントハンドラーの実装)
-8. [複数会話セットによる台詞分岐](#8-複数会話セットによる台詞分岐)
-9. [キー操作一覧](#9-キー操作一覧)
-10. [トラブルシューティング](#10-トラブルシューティング)
+8. [GameEvent チャンネルによる外部システム連携](#8-gameevent-チャンネルによる外部システム連携)
+9. [複数会話セットによる台詞分岐](#9-複数会話セットによる台詞分岐)
+10. [キー操作一覧](#10-キー操作一覧)
+11. [トラブルシューティング](#11-トラブルシューティング)
 
 ---
 
@@ -64,7 +65,7 @@ DialogueSystem          ← ルートに置く（DontDestroyOnLoad 対象）
 ### 2.2 DialogueManager の設定
 
 | フィールド | 説明 | 推奨値 |
-|------------|------|--------|
+| --- | --- | --- |
 | Ui Controller | DialogueUIController コンポーネント | 同 GameObject |
 | Flag Database | DialogueFlagDatabase アセット | 作成したものを設定 |
 | Default Text Speed | 1文字あたりの表示秒数 | 0.03 |
@@ -92,7 +93,7 @@ Project ウィンドウで右クリック →
 ### 3.2 共通設定項目
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | Dialogue Set Id | 一意のID。フラグ連動やジャンプで参照する（例: `villager_default`） |
 | Display Name | エディタ上での表示名（ゲームには影響しない） |
 | Priority | 複数セットがある場合の優先度。**数値が大きいほど優先** |
@@ -121,7 +122,7 @@ Inspector 下部のボタンで種別を選んで追加する。
 ### 共通項目（全ノード）
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **NodeId** | このノードを識別する一意のID。他のノードの NextNodeId から参照される |
 | **NextNodeId** | このノード完了後に進む次のノードのID。空にすると会話終了 |
 | **Comment** | メモ欄。ゲームには影響しない |
@@ -138,7 +139,7 @@ Inspector 下部のボタンで種別を選んで追加する。
 NPC の台詞など、テキストを1つ表示するノード。最も基本的なノード。
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Speaker Display Name** | 画面に表示される話者名 | `村人`、`勇者` |
 | **Speaker Id** | 話者の内部ID。ボイス等の拡張で使用 | `npc_villager_01` |
 | **Text** | 表示するテキスト本文 | `「旅人よ、よくぞ来た。」` |
@@ -162,14 +163,14 @@ Node_999 (End)
 プレイヤーに選択肢を提示するノード。選択結果によって分岐する。
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **Prompt Text** | 選択肢の上に表示する問いかけテキスト（省略可） |
 | **Choices** | 選択肢のリスト（2件以上推奨） |
 
 #### Choice（各選択肢）の設定項目
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Choice Id** | 選択肢の内部ID | `choice_yes` |
 | **Choice Text** | 画面に表示するテキスト | `「はい、お受けします」` |
 | **Show Conditions** | 表示条件。空なら常に表示 | フラグ `has_item = true` |
@@ -194,14 +195,14 @@ Node_002 (Choice)
 ChoiceNode と異なり UI は表示されない。
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **Branches** | 分岐条件のリスト。上から評価し最初に一致したものを採用 |
 | **Default Next Node Id** | どの条件にも一致しなかった場合の遷移先 |
 
 #### Branch（各分岐）の設定項目
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Condition** | 分岐条件（後述の条件設定を参照） | フラグ `quest_done = true` |
 | **Priority** | 評価優先度。**数値が大きいほど先に評価** | `10` |
 | **Next Node Id** | 条件一致時の遷移先 | `Node_010` |
@@ -222,14 +223,14 @@ Node_005 (Branch)
 フラグ更新・クエスト更新・SE再生などに使う。
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **Events** | 実行するイベントのリスト |
 | **Wait Mode** | `Immediate`=即時進行 / `WaitForComplete`=完了待ち / `WaitForSignal`=外部シグナル待ち |
 
 #### Event（各イベント）の設定項目
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Event Id** | 実行するハンドラーのID。コード側で登録したIDと一致させる | `SetFlag`、`PlaySE` |
 | **Parameters** | ハンドラーに渡す文字列の引数リスト | `["quest_001_active", "true"]` |
 | **Skip Policy** | `MustRunOnSkip`=スキップ中でも必ず実行 / `OptionalOnSkip`=省略可 / `VisualOnlyOnSkip`=視覚演出のため省略可 |
@@ -253,7 +254,7 @@ Node_003 (Event)
 **現時点では即時完了扱い**（外部シーケンスシステムとの連携は将来実装）。
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **Sequence Id** | 再生するシーケンスのID |
 | **Wait For Completion** | シーケンス完了まで会話を待機するか |
 | **Allow Skip** | シーケンス中のスキップを許可するか |
@@ -266,7 +267,7 @@ Node_003 (Event)
 共通会話の再利用や会話ファイルの分割に使う。
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Target Set Id** | ジャンプ先の DialogueSet の Id。空なら現在のセット内でジャンプ | `common_ending` |
 | **Target Node Id** | ジャンプ先のノードId | `Node_001` |
 
@@ -285,7 +286,7 @@ Node_020 (Jump)
 会話を終了するノード。必ず会話の末尾に置く。
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **End Reason** | 終了理由のメモ（ゲームには影響しない） |
 | **End Events** | 終了時に実行するイベントのリスト |
 
@@ -306,7 +307,7 @@ Project ウィンドウで右クリック →
 ### 5.2 フラグの登録
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Flag Id** | フラグの一意のID | `quest_001_active` |
 | **Flag Type** | `Bool` または `Int` | `Bool` |
 | **Default Bool Value** | Bool フラグの初期値 | `false` |
@@ -315,7 +316,7 @@ Project ウィンドウで右クリック →
 ### 5.3 条件設定（Conditions / Start Conditions）
 
 | フィールド | 説明 | 例 |
-|------------|------|-----|
+| --- | --- | --- |
 | **Target Type** | 条件の対象種別 | `FlagBool`、`FlagInt`、`DialogueRead` |
 | **Target Id** | 対象のID | `quest_001_active` |
 | **Operator** | 比較演算子 | `Equal`、`Greater` など |
@@ -324,7 +325,7 @@ Project ウィンドウで右クリック →
 **設定例:**
 
 | Target Type | Target Id | Operator | Value | 意味 |
-|-------------|-----------|----------|-------|------|
+| --- | --- | --- | --- | --- |
 | FlagBool | `quest_done` | Equal | `true` | クエスト完了済み |
 | FlagInt | `gold` | GreaterOrEqual | `100` | 所持金が100以上 |
 | DialogueRead | `Node_001` | Equal | `true` | Node_001 を既読 |
@@ -368,7 +369,7 @@ NPC_Villager
 ### 6.2 NpcDialogueTrigger の設定
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | **Dialogue Sets** | この NPC が持つ会話セットのリスト。複数登録可（Priority 順に評価） |
 | **Player Tag** | プレイヤーの Tag（デフォルト: `Player`） |
 | **Interact Prompt** | 頭上に表示するプロンプト GameObject |
@@ -435,7 +436,7 @@ private void Start()
 ### 7.3 EventId の命名規則（推奨）
 
 | EventId | 用途 | Parameters 例 |
-|---------|------|---------------|
+| --- | --- | --- |
 | `SetFlag` | Bool フラグを設定 | `["quest_001_active", "true"]` |
 | `AddInt` | Int フラグに加算 | `["gold", "100"]` |
 | `PlaySE` | SE を再生 | `["se_item_get"]` |
@@ -443,14 +444,64 @@ private void Start()
 
 ---
 
-## 8. 複数会話セットによる台詞分岐
+## 8. GameEvent チャンネルによる外部システム連携
+
+会話の途中でカメラ演出・アニメーション・ポストエフェクト等を発火したい場合、`GameEvent` ScriptableObject を使う。会話システムは「発火するだけ」で、何が起きるかを知らない疎結合設計。
+
+### 8.1 GameEvent アセットの作成
+
+Project ウィンドウで右クリック →  
+**Create → LibraryOfGamecraft → Events → GameEvent**
+
+ファイル名例: `OnQuestStarted.asset`、`OnBossAppeared.asset`
+
+### 8.2 EventNode への登録
+
+`EventNode` の **Game Events** リストに作成した GameEvent アセットをドラッグ。  
+会話がこのノードに到達すると `Raise()` が呼ばれる。
+
+### 8.3 受け取り側のセットアップ
+
+発火を受け取りたい GameObject（カメラ・アニメーター等）に `GameEventListener` をアタッチ。
+
+| フィールド | 設定内容 |
+| --- | --- |
+| **Event** | 同じ GameEvent アセットを設定 |
+| **Response** | 発火時に呼び出すメソッドを Inspector から配線 |
+
+```
+CameraRig GameObject
+  └── GameEventListener
+        ├── Event:    OnBossAppeared.asset
+        └── Response: CameraShakeController.Shake()
+```
+
+### 8.4 複数のシステムが同じイベントを受け取る場合
+
+同じ GameEvent アセットを複数の GameEventListener に設定すれば、1回の `Raise()` で全員に通知される。
+
+```
+OnBossAppeared.asset を Raise()
+  ├── CameraRig      → カメラシェイク
+  ├── PostFXManager  → ポストエフェクト
+  └── BGMController  → BGM 切り替え
+```
+
+### 8.5 スキップ時の挙動
+
+スキップ中でも `GameEvent.Raise()` は実行される。  
+視覚演出の省略が必要な場合は、受け取り側の `GameEventListener.Response` に登録するメソッド内で判断する。
+
+---
+
+## 9. 複数会話セットによる台詞分岐
 
 同一NPCでゲーム状態に応じて台詞を変える場合、DialogueSet を複数作成して Priority で優先順位を設定する。
 
 ### 設定例：クエスト進行に応じた台詞
 
 | SetId | Priority | Start Conditions | 使われるタイミング |
-|-------|----------|-----------------|------------------|
+| --- | --- | --- | --- |
 | `villager_quest_done` | 20 | `quest_001_done = true` | クエスト完了後 |
 | `villager_quest_active` | 10 | `quest_001_active = true` | クエスト受注後 |
 | `villager_default` | 0 | なし | 上記以外 |
@@ -468,10 +519,10 @@ Dialogue Sets
 
 ---
 
-## 9. キー操作一覧
+## 10. キー操作一覧
 
 | キー | 動作 |
-|------|------|
+| --- | --- |
 | `E` / `Enter` / `Space` | 会話開始 / 次送り / 選択確定 |
 | `W` / `↑` | 選択肢カーソル上移動 |
 | `S` / `↓` | 選択肢カーソル下移動 |
@@ -480,10 +531,10 @@ Dialogue Sets
 
 ---
 
-## 10. トラブルシューティング
+## 11. トラブルシューティング
 
 | 症状 | 原因 | 対処 |
-|------|------|------|
+| --- | --- | --- |
 | 会話が開始しない | Player の Tag が `Player` になっていない | Tag を確認・設定 |
 | 会話が開始しない | `DialogueManager` が Idle 以外の状態 | Console でエラーを確認 |
 | テキストが表示されない | `DialogueText` が未設定 | UIController のフィールドを確認 |

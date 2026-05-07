@@ -2,7 +2,7 @@
 
 ## 概要
 
-ゲーム内のNPC会話、イベント会話、分岐会話、フラグ連動会話を制御する汎用会話システム。  
+ゲーム内のNPC会話、イベント会話、分岐会話、フラグ連動会話を制御する汎用会話システム。
 仕様書 `Specs/会話システム仕様書.md` v1.0 に基づく初版実装。
 
 ## 設計
@@ -10,7 +10,7 @@
 ### クラス構成
 
 | クラス | 責務 |
-|--------|------|
+| --- | --- |
 | `DialogueManager` | 会話全体の開始・進行・終了・状態遷移を管理するMonoBehaviour |
 | `DialogueRunner` | 現在ノードの解釈、次ノード決定、分岐評価（MonoBehaviour非依存） |
 | `DialogueUIController` | UI表示・文字送り・選択肢表示・ログ表示 |
@@ -24,7 +24,7 @@
 ### データ構造
 
 | クラス | 説明 |
-|--------|------|
+| --- | --- |
 | `DialogueSet` | ScriptableObject。1つの会話グラフ単位 |
 | `DialogueFlagDatabase` | ScriptableObject。フラグ定義とデフォルト値 |
 | `MessageNode` | テキスト表示ノード |
@@ -37,7 +37,7 @@
 
 ### 状態遷移
 
-```
+```text
 Idle → Opening → ResolvingStartNode
      → EnterNode ← ─────────────────────────────┐
          ↓                                       │
@@ -95,16 +95,24 @@ public class FlagEventHandler : IDialogueEventHandler
 ## 実装メモ
 
 ### スキップ設計
+
 スキップは初期設計から組み込み。`ResolveSkipState()` がノードごとのポリシー（`SkipPolicy`）と既読状態を確認し、スキップ継続・停止を決定する。スキップ中でも `MustRunOnSkip` イベントは `ApplyImmediate()` で必ず実行し、ゲーム状態の整合性を保つ。
 
 ### ノードのポリモーフィズム
+
 `DialogueSet.Nodes` は `[SerializeReference]` を使用することで、Unityのインスペクター上で派生クラス（各ノード型）をリストに格納できる。
 
 ### 入力ブリッジ
+
 `Update()` でキー入力を検出してフラグに記録し、コルーチン内でそのフラグを読み取る設計。これにより、コルーチンと入力処理が疎結合になっている。
 
-### 外部システム連携
+### 外部システム連携（文字列IDベース）
+
 会話システムはイベントIDのみを保持し、実際の処理は `IDialogueEventHandler` を実装した外部クラスが担う。Quest更新・アイテム付与・SE再生等は全てハンドラーとして外部から登録する。
+
+### 外部システム連携（GameEvent チャンネルベース）
+
+`EventNode.GameEvents` に `GameEvent` ScriptableObject を登録すると、会話進行時に `Raise()` が呼ばれる。受け取り側は `GameEventListener` コンポーネントで購読し、Inspector から任意の処理を配線する。会話システムは何が起きるかを一切知らない完全疎結合設計。詳細は `GameEventSystem_report.md` を参照。
 
 ## 既知の制限・TODO
 
@@ -117,5 +125,6 @@ public class FlagEventHandler : IDialogueEventHandler
 ## 変更履歴
 
 | 日付 | 内容 |
-|------|------|
+| --- | --- |
 | 2026-04-19 | 初版作成（仕様書v1.0 必須・準必須機能を実装） |
+| 2026-05-04 | GameEvent チャンネルによる外部システム連携を追加（EventNode.GameEvents） |
