@@ -31,8 +31,17 @@ namespace LibraryOfGamecraft.AI
         private void Start()
         {
             HomePosition = transform.position;
-            if (_graph != null)
-                TransitionTo(_graph.StartNode);
+            if (_graph == null)
+            {
+                Debug.LogWarning($"[AIController] {name}: Graph が未設定です", this);
+                return;
+            }
+            if (_graph.StartNode == null)
+            {
+                Debug.LogWarning($"[AIController] {name}: Graph の StartNode が未設定です", this);
+                return;
+            }
+            TransitionTo(_graph.StartNode);
         }
 
         private void Update()
@@ -65,6 +74,7 @@ namespace LibraryOfGamecraft.AI
             _currentNode = next;
             ElapsedTimeInState = 0f;
             _currentNode?.OnEnter(this);
+            Debug.Log($"[AIController] {name}: → {(next != null ? next.name : "null（ノードなし）")}", this);
         }
 
         private void ApplyMovement()

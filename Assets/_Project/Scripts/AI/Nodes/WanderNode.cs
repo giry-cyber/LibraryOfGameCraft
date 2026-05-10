@@ -13,6 +13,7 @@ namespace LibraryOfGamecraft.AI
 
         public override void OnEnter(AIController context)
         {
+            Debug.Log($"[WanderNode] {context.SelfTransform.name}: OnEnter / HomePosition={context.HomePosition} / Radius={_wanderRadius}");
             context.Blackboard.Set(KeyHasTarget, false);
             PickNewTarget(context);
         }
@@ -53,8 +54,10 @@ namespace LibraryOfGamecraft.AI
                 0f,
                 Random.Range(-_wanderRadius, _wanderRadius)
             );
-            context.Blackboard.Set(KeyTarget, context.HomePosition + randomOffset);
+            var target = context.HomePosition + randomOffset;
+            context.Blackboard.Set(KeyTarget, target);
             context.Blackboard.Set(KeyHasTarget, true);
+            Debug.Log($"[WanderNode] {context.SelfTransform.name}: 新ターゲット={target}");
         }
     }
 }
