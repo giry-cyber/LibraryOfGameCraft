@@ -23,6 +23,7 @@ MonoBehaviour:
   - rid: 3891024761329287240
   - rid: 3891024761329287241
   - rid: 3891024761329287242
+  - rid: 6123997363648331777
   DefaultSkipPolicy: 1
   DefaultAutoEnabled: 0
   DefaultAutoDelay: 2
@@ -43,7 +44,7 @@ MonoBehaviour:
         NextNodeId: Node_002
         Position: {x: 0, y: 0}
         SpeakerId: 
-        SpeakerDisplayName: 
+        SpeakerDisplayName: VIllager
         Text: Can you help me?
         VoiceId: 
         PortraitId: 
@@ -88,7 +89,7 @@ MonoBehaviour:
         PostEvents: []
         SkipPolicy: 0
         LogPolicy: 0
-        NextNodeId: Node_999
+        NextNodeId: Node_006
         Position: {x: 720, y: 0}
         SpeakerId: 
         SpeakerDisplayName: VillagerA
@@ -109,7 +110,7 @@ MonoBehaviour:
         PostEvents: []
         SkipPolicy: 0
         LogPolicy: 0
-        NextNodeId: Node_999
+        NextNodeId: Node_006
         Position: {x: 720, y: 200}
         SpeakerId: 
         SpeakerDisplayName: VillagerA
@@ -131,6 +132,23 @@ MonoBehaviour:
         SkipPolicy: 0
         LogPolicy: 0
         NextNodeId: 
-        Position: {x: 1029.3334, y: 47.333332}
+        Position: {x: 1145.3334, y: 81.33334}
         EndReason: 
         EndEvents: []
+    - rid: 6123997363648331777
+      type: {class: EventNode, ns: LibraryOfGamecraft.Dialogue, asm: Assembly-CSharp}
+      data:
+        NodeId: Node_006
+        NodeType: 3
+        Comment: 
+        Conditions: []
+        PreEvents: []
+        PostEvents: []
+        SkipPolicy: 0
+        LogPolicy: 0
+        NextNodeId: 
+        Position: {x: 0, y: 0}
+        Events: []
+        WaitMode: 0
+        GameEvents:
+        - {fileID: 11400000, guid: 54c57700bc4a2634ba7817686336cbf4, type: 2}
