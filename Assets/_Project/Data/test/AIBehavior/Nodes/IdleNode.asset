@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd180ca9d531db47a28a3ad2ac7eb69, type: 3}
   m_Name: IdleNode
   m_EditorClassIdentifier: 
+  _position: {x: 0, y: 0}
   _transitions:
   - _condition: {fileID: 11400000, guid: 35be014dc6ff41043957466d09aaf401, type: 2}
     _nextNode: {fileID: 11400000, guid: ad3fc6520a979414f92b1d6e130ae364, type: 2}

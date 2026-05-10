@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d4566442d824742a84bc3053fa54a0, type: 3}
   m_Name: TestAIBehaviorGraph
   m_EditorClassIdentifier: 
-  _startNode: {fileID: 0}
+  _startNode: {fileID: 11400000, guid: 09739b0250be5bd42a30ae9d36691495, type: 2}
+  _nodes:
+  - {fileID: 11400000, guid: 09739b0250be5bd42a30ae9d36691495, type: 2}
+  - {fileID: 11400000, guid: ad3fc6520a979414f92b1d6e130ae364, type: 2}

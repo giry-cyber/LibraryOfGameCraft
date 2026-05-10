@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31be69f9cb983ab46ab9e580512582a2, type: 3}
   m_Name: WanderNode
   m_EditorClassIdentifier: 
+  _position: {x: 320, y: 0}
   _transitions:
   - _condition: {fileID: 11400000, guid: adb11ca899a692c44af59ff1ed0711ad, type: 2}
     _nextNode: {fileID: 11400000, guid: 09739b0250be5bd42a30ae9d36691495, type: 2}
