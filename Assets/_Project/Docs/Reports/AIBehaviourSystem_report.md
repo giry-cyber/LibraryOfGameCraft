@@ -91,3 +91,4 @@ AIController (MonoBehaviour)
 |------|------|
 | 2026-05-08 | 初版作成（コア基盤 + IdleNode + WanderNode + TimerCondition） |
 | 2026-05-11 | ビジュアルグラフエディタを追加（AIGraphEditorWindow / AIGraphView / AINodeView）。AINode に Position フィールド、AIBehaviourGraph に Nodes リストと SetStartNode を追加 |
+| 2026-05-11 | NavMesh基盤を追加。WorldNavMeshManager（WorldStreaming連携・シーンロード時にランタイムBake）を実装 |
