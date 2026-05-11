@@ -9,6 +9,8 @@ namespace LibraryOfGamecraft.AI
     public class AIController : MonoBehaviour
     {
         [SerializeField] private AIBehaviourGraph _graph;
+        [SerializeField] private PatrolPath _patrolPath;
+        [SerializeField] private Transform _targetTransform;
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _rotationSpeed = 10f;
         [SerializeField] private float _stoppingDistance = 0.5f;
@@ -26,6 +28,9 @@ namespace LibraryOfGamecraft.AI
         public Vector3 HomePosition { get; private set; }
         public float ElapsedTimeInState { get; private set; }
         public bool IsGrounded => _characterController.isGrounded;
+        public float MoveSpeed => _moveSpeed;
+        public PatrolPath PatrolPath => _patrolPath;
+        public Transform TargetTransform { get => _targetTransform; set => _targetTransform = value; }
 
         // NavMeshAgent が目標に到達したか
         public bool HasArrived =>

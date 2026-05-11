@@ -22,14 +22,16 @@ NavMesh（事前Bake）を使わず、ウェイポイントと CharacterControll
 | `AIBehaviourGraph` | ScriptableObject | ノードグラフの定義（StartNode を持つ） |
 | `AIController` | MonoBehaviour | グラフを実行し、移動・回転・重力を適用する |
 
-### 提供ノード（初期実装）
+### 提供ノード
 
 | クラス | 挙動 |
 |--------|------|
 | `IdleNode` | その場で静止 |
 | `WanderNode` | HomePosition を中心にランダム徘徊 |
+| `PatrolNode` | PatrolPath のウェイポイントを順番に巡回 |
+| `ChaseNode` | TargetTransform を追跡（_updateInterval 秒ごとに経路再計算） |
 
-### 提供条件（初期実装）
+### 提供条件
 
 | クラス | 評価内容 |
 |--------|----------|
@@ -74,14 +76,15 @@ AIController (MonoBehaviour)
 
 ## 既知の制限・TODO
 
-- [ ] PatrolNode（ウェイポイント巡回）未実装
-- [ ] ChaseNode（プレイヤー追跡）未実装
+- [x] PatrolNode（ウェイポイント巡回）実装済み
+- [x] ChaseNode（プレイヤー追跡）実装済み
 - [ ] AttackNode 未実装
 - [ ] AlertNode（発見状態）未実装
 - [ ] ReturnNode（帰還行動）未実装
+- [ ] 知覚システム（視野・聴覚）未実装 — TargetTransform のセットは外部任せ
 - [ ] WorldStreaming との統合（シーンロード時のスポーン/デスポーン）未実装
 - [ ] アニメーション連携未実装
-- [ ] 障害物回避未実装（現状は直進のみ）
+- [ ] ChaseNode の _giveUpDistance 判定は条件として外部化すべき（現状はノード側でプロパティを公開、Condition 側で参照する想定）
 
 ---
 
@@ -93,3 +96,4 @@ AIController (MonoBehaviour)
 | 2026-05-11 | ビジュアルグラフエディタを追加（AIGraphEditorWindow / AIGraphView / AINodeView）。AINode に Position フィールド、AIBehaviourGraph に Nodes リストと SetStartNode を追加 |
 | 2026-05-11 | NavMesh基盤を追加。WorldNavMeshManager（WorldStreaming連携・シーンロード時にランタイムBake）を実装 |
 | 2026-05-11 | AIController を NavMesh ベースに移行。NavMeshAgent（updatePosition/Rotation=false）追加、SetDestination / StopMovement / HasArrived を実装。WanderNode・IdleNode を新 API に対応 |
+| 2026-05-12 | Phase 2: PatrolPath（MonoBehaviour ウェイポイント列）、PatrolNode（巡回）、ChaseNode（追跡）を追加。AIController に PatrolPath・TargetTransform・MoveSpeed プロパティを追加 |
