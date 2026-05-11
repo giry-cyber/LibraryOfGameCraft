@@ -16,5 +16,5 @@ MonoBehaviour:
   _transitions:
   - _condition: {fileID: 11400000, guid: adb11ca899a692c44af59ff1ed0711ad, type: 2}
     _nextNode: {fileID: 11400000, guid: 09739b0250be5bd42a30ae9d36691495, type: 2}
-  _wanderRadius: 5
-  _arrivalDistance: 0.5
+  _wanderRadius: 100
+  _moveTimeout: 8
