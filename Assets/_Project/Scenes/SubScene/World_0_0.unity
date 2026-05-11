@@ -1095,6 +1095,7 @@ GameObject:
   - component: {fileID: 87322869}
   - component: {fileID: 87322868}
   - component: {fileID: 87322867}
+  - component: {fileID: 87322874}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -1258,6 +1259,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &87322874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87322866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 397790f647b1da343b21ec77d8c42f65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _viewDistance: 10
+  _viewHalfAngle: 60
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  _hearingRadius: 5.06
+  _scanInterval: 0.2
 --- !u!1 &100223746
 GameObject:
   m_ObjectHideFlags: 0

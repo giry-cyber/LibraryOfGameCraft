@@ -36,6 +36,9 @@ NavMesh（事前Bake）を使わず、ウェイポイントと CharacterControll
 | クラス | 評価内容 |
 |--------|----------|
 | `TimerCondition` | 現在ノードの経過時間が指定秒数を超えたら true |
+| `TargetInRangeCondition` | TargetTransform が非 null かつ指定距離以内なら true |
+| `TargetLostCondition` | TargetTransform が null または指定距離以上なら true |
+| `HasArrivedCondition` | NavMeshAgent が目標地点に到達したら true |
 
 ### 依存関係
 
@@ -78,13 +81,13 @@ AIController (MonoBehaviour)
 
 - [x] PatrolNode（ウェイポイント巡回）実装済み
 - [x] ChaseNode（プレイヤー追跡）実装済み
+- [x] ReturnNode（帰還行動）実装済み
+- [x] 知覚システム（視野・聴覚）実装済み — PerceptionComponent
 - [ ] AttackNode 未実装
-- [ ] AlertNode（発見状態）未実装
-- [ ] ReturnNode（帰還行動）未実装
-- [ ] 知覚システム（視野・聴覚）未実装 — TargetTransform のセットは外部任せ
+- [ ] AlertNode（発見状態）未実装 — PerceptionComponent は即時検知のみ、ステルス的な段階的アラートは未対応
 - [ ] WorldStreaming との統合（シーンロード時のスポーン/デスポーン）未実装
 - [ ] アニメーション連携未実装
-- [ ] ChaseNode の _giveUpDistance 判定は条件として外部化すべき（現状はノード側でプロパティを公開、Condition 側で参照する想定）
+- [ ] PerceptionComponent の記憶時間（一定秒数は最後に見た位置を保持）未実装
 
 ---
 
@@ -97,3 +100,4 @@ AIController (MonoBehaviour)
 | 2026-05-11 | NavMesh基盤を追加。WorldNavMeshManager（WorldStreaming連携・シーンロード時にランタイムBake）を実装 |
 | 2026-05-11 | AIController を NavMesh ベースに移行。NavMeshAgent（updatePosition/Rotation=false）追加、SetDestination / StopMovement / HasArrived を実装。WanderNode・IdleNode を新 API に対応 |
 | 2026-05-12 | Phase 2: PatrolPath（MonoBehaviour ウェイポイント列）、PatrolNode（巡回）、ChaseNode（追跡）を追加。AIController に PatrolPath・TargetTransform・MoveSpeed プロパティを追加 |
+| 2026-05-12 | Phase 3: PerceptionComponent（視野+聴覚でターゲット自動検知）、ReturnNode（帰還）、TargetInRangeCondition / TargetLostCondition / HasArrivedCondition を追加 |

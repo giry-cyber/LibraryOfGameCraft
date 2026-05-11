@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f654bc0782f56d4bb7ec76d753c856e, type: 3}
-  m_Name: PatrolNode
+  m_Script: {fileID: 11500000, guid: 74b04c2d2f2315740995bedf02c015ff, type: 3}
+  m_Name: ReturnNode
   m_EditorClassIdentifier: 
-  _position: {x: -103.333336, y: 61.333332}
+  _position: {x: 397.33334, y: 304.66666}
   _transitions:
-  - _condition: {fileID: 11400000, guid: 62bc84300e474f6499a614d361558a2d, type: 2}
-    _nextNode: {fileID: 11400000, guid: ed7ccfaeaebd3ed41a237f0f03746473, type: 2}
+  - _condition: {fileID: 11400000, guid: 124bc1d3efd7f344484b0cbeaee83c77, type: 2}
+    _nextNode: {fileID: 11400000, guid: 05b509195c666c94a8c78949a2aa1a4c, type: 2}

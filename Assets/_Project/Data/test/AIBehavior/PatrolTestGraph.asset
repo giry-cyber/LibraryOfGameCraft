@@ -29,3 +29,5 @@ MonoBehaviour:
   _startNode: {fileID: 11400000, guid: 05b509195c666c94a8c78949a2aa1a4c, type: 2}
   _nodes:
   - {fileID: 11400000, guid: 05b509195c666c94a8c78949a2aa1a4c, type: 2}
+  - {fileID: 11400000, guid: ed7ccfaeaebd3ed41a237f0f03746473, type: 2}
+  - {fileID: 11400000, guid: 7a1da01cdc57ab34ab4b38323961dc8d, type: 2}
