@@ -83,10 +83,10 @@ AIController (MonoBehaviour)
 - [x] ChaseNode（プレイヤー追跡）実装済み
 - [x] ReturnNode（帰還行動）実装済み
 - [x] 知覚システム（視野・聴覚）実装済み — PerceptionComponent
+- [x] アニメーション連携実装済み — AIAnimatorAdapter
 - [ ] AttackNode 未実装
 - [ ] AlertNode（発見状態）未実装 — PerceptionComponent は即時検知のみ、ステルス的な段階的アラートは未対応
 - [ ] WorldStreaming との統合（シーンロード時のスポーン/デスポーン）未実装
-- [ ] アニメーション連携未実装
 - [ ] PerceptionComponent の記憶時間（一定秒数は最後に見た位置を保持）未実装
 
 ---
@@ -101,3 +101,5 @@ AIController (MonoBehaviour)
 | 2026-05-11 | AIController を NavMesh ベースに移行。NavMeshAgent（updatePosition/Rotation=false）追加、SetDestination / StopMovement / HasArrived を実装。WanderNode・IdleNode を新 API に対応 |
 | 2026-05-12 | Phase 2: PatrolPath（MonoBehaviour ウェイポイント列）、PatrolNode（巡回）、ChaseNode（追跡）を追加。AIController に PatrolPath・TargetTransform・MoveSpeed プロパティを追加 |
 | 2026-05-12 | Phase 3: PerceptionComponent（視野+聴覚でターゲット自動検知）、ReturnNode（帰還）、TargetInRangeCondition / TargetLostCondition / HasArrivedCondition を追加 |
+| 2026-05-12 | Phase 4: AIAnimatorAdapter（OnNodeEntered → Animatorパラメータ自動設定 + Speedブレンドツリー連携）を追加。AIController に Velocity プロパティを追加 |
+| 2026-05-18 | ChaseNode に _chaseSpeed を追加し OnEnter/OnExit で SetMoveSpeed() を呼ぶよう変更。AIController に SetMoveSpeed() / WalkSpeed を追加 |

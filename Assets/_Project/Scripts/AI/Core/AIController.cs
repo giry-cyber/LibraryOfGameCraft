@@ -28,9 +28,12 @@ namespace LibraryOfGamecraft.AI
         public Vector3 HomePosition { get; private set; }
         public float ElapsedTimeInState { get; private set; }
         public bool IsGrounded => _characterController.isGrounded;
-        public float MoveSpeed => _moveSpeed;
+        public float WalkSpeed => _moveSpeed;   // インスペクタで設定したデフォルト速度
         public PatrolPath PatrolPath => _patrolPath;
         public Transform TargetTransform { get => _targetTransform; set => _targetTransform = value; }
+
+        // XZ 平面の移動速度ベクトル（AIAnimatorAdapter でブレンドツリーに渡す）
+        public Vector3 Velocity => new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.z);
 
         // NavMeshAgent が目標に到達したか
         public bool HasArrived =>
@@ -109,6 +112,11 @@ namespace LibraryOfGamecraft.AI
         }
 
         // ノードから呼ぶ移動API
+        public void SetMoveSpeed(float speed)
+        {
+            _agent.speed = speed;
+        }
+
         public void SetDestination(Vector3 destination)
         {
             if (!_agent.isOnNavMesh)
