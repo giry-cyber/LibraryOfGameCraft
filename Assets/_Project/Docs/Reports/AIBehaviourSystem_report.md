@@ -1,4 +1,8 @@
-# AIBehaviourSystem レポート
+# AIBehaviourSystem レポート（Legacy）
+
+> **このシステムは Legacy です。**
+> スクリプトは `Scripts/AI/Legacy/` および `Scripts/Editor/AI/Legacy/` に格納されています。
+> 新しい AI システムとは別物として扱ってください。
 
 ## 概要
 
