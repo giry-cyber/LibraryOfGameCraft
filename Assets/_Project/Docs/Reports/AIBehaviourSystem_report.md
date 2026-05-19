@@ -30,6 +30,8 @@ NavMesh（事前Bake）を使わず、ウェイポイントと CharacterControll
 | `WanderNode` | HomePosition を中心にランダム徘徊 |
 | `PatrolNode` | PatrolPath のウェイポイントを順番に巡回 |
 | `ChaseNode` | TargetTransform を追跡（_updateInterval 秒ごとに経路再計算） |
+| `AlertNode` | 発見直後に停止してターゲット方向を向く（TimerCondition で次ノードへ） |
+| `AttackNode` | 攻撃距離内で _attackInterval 秒ごとに TriggerAttack() を発火 |
 
 ### 提供条件
 
@@ -39,6 +41,7 @@ NavMesh（事前Bake）を使わず、ウェイポイントと CharacterControll
 | `TargetInRangeCondition` | TargetTransform が非 null かつ指定距離以内なら true |
 | `TargetLostCondition` | TargetTransform が null または指定距離以上なら true |
 | `HasArrivedCondition` | NavMeshAgent が目標地点に到達したら true |
+| `InAttackRangeCondition` | TargetTransform が攻撃距離以内なら true |
 
 ### 依存関係
 
@@ -84,8 +87,8 @@ AIController (MonoBehaviour)
 - [x] ReturnNode（帰還行動）実装済み
 - [x] 知覚システム（視野・聴覚）実装済み — PerceptionComponent
 - [x] アニメーション連携実装済み — AIAnimatorAdapter
-- [ ] AttackNode 未実装
-- [ ] AlertNode（発見状態）未実装 — PerceptionComponent は即時検知のみ、ステルス的な段階的アラートは未対応
+- [x] AttackNode 実装済み（ダメージ処理は OnAttackTriggered イベント経由で外部委譲）
+- [x] AlertNode 実装済み
 - [ ] WorldStreaming との統合（シーンロード時のスポーン/デスポーン）未実装
 - [ ] PerceptionComponent の記憶時間（一定秒数は最後に見た位置を保持）未実装
 
@@ -103,3 +106,4 @@ AIController (MonoBehaviour)
 | 2026-05-12 | Phase 3: PerceptionComponent（視野+聴覚でターゲット自動検知）、ReturnNode（帰還）、TargetInRangeCondition / TargetLostCondition / HasArrivedCondition を追加 |
 | 2026-05-12 | Phase 4: AIAnimatorAdapter（OnNodeEntered → Animatorパラメータ自動設定 + Speedブレンドツリー連携）を追加。AIController に Velocity プロパティを追加 |
 | 2026-05-18 | ChaseNode に _chaseSpeed を追加し OnEnter/OnExit で SetMoveSpeed() を呼ぶよう変更。AIController に SetMoveSpeed() / WalkSpeed を追加 |
+| 2026-05-18 | AlertNode（警戒）、AttackNode（攻撃）、InAttackRangeCondition を追加。AIController に FaceToward() / TriggerAttack() / OnAttackTriggered イベントを追加 |

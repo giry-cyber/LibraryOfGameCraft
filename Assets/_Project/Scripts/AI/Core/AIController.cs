@@ -23,6 +23,9 @@ namespace LibraryOfGamecraft.AI
         public AIBlackboard Blackboard { get; } = new AIBlackboard();
         public event Action<AINode> OnNodeEntered;
 
+        // AttackNode が攻撃を発火するとき呼ぶ（ダメージ処理は外部が購読）
+        public event Action OnAttackTriggered;
+
         // ノードから参照するコンテキスト情報
         public Transform SelfTransform => transform;
         public Vector3 HomePosition { get; private set; }
@@ -116,6 +119,18 @@ namespace LibraryOfGamecraft.AI
         {
             _agent.speed = speed;
         }
+
+        // ノードからターゲット方向へ向く（停止中の AlertNode / AttackNode で使用）
+        public void FaceToward(Vector3 target, float speed)
+        {
+            var dir = target - transform.position;
+            dir.y = 0f;
+            if (dir.sqrMagnitude < 0.01f) return;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * speed);
+        }
+
+        public void TriggerAttack() => OnAttackTriggered?.Invoke();
 
         public void SetDestination(Vector3 destination)
         {
