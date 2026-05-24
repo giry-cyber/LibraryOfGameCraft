@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf8a75f744422ff4f8841f62dec0b3f5, type: 3}
   m_Name: ChaseNode
   m_EditorClassIdentifier: 
-  _position: {x: 347.33334, y: -45.333332}
+  _position: {x: 356.66666, y: -45.333332}
   _transitions:
   - _condition: {fileID: 11400000, guid: f7218102488ecf24abebb847773ecdbb, type: 2}
     _nextNode: {fileID: 11400000, guid: 7a1da01cdc57ab34ab4b38323961dc8d, type: 2}

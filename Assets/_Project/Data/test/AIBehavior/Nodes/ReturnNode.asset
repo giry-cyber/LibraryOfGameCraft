@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b04c2d2f2315740995bedf02c015ff, type: 3}
   m_Name: ReturnNode
   m_EditorClassIdentifier: 
-  _position: {x: 397.33334, y: 304.66666}
+  _position: {x: 50.666668, y: 284.66666}
   _transitions:
   - _condition: {fileID: 11400000, guid: 124bc1d3efd7f344484b0cbeaee83c77, type: 2}
     _nextNode: {fileID: 11400000, guid: 05b509195c666c94a8c78949a2aa1a4c, type: 2}

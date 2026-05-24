@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f654bc0782f56d4bb7ec76d753c856e, type: 3}
   m_Name: PatrolNode
   m_EditorClassIdentifier: 
-  _position: {x: -103.333336, y: 61.333332}
+  _position: {x: -222.66667, y: -45.333332}
   _transitions:
   - _condition: {fileID: 11400000, guid: 62bc84300e474f6499a614d361558a2d, type: 2}
     _nextNode: {fileID: 11400000, guid: ed7ccfaeaebd3ed41a237f0f03746473, type: 2}
