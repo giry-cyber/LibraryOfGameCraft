@@ -9,14 +9,13 @@ namespace LibraryOfGamecraft.BT
     [RequireComponent(typeof(NavMeshAgent))]
     public class CharacterMotor : MonoBehaviour
     {
-        [SerializeField] private float _moveSpeed       = 3f;
-        [SerializeField] private float _rotationSpeed   = 10f;
+        [SerializeField] private float _moveSpeed        = 3f;
+        [SerializeField] private float _rotationSpeed    = 10f;
         [SerializeField] private float _stoppingDistance = 0.5f;
 
         private CharacterController _cc;
         private NavMeshAgent        _agent;
         private float               _verticalVelocity;
-        private int                 _debugFrames;
 
         // ── クエリ ──────────────────────────────────────────
         public float   DefaultSpeed => _moveSpeed;
@@ -36,7 +35,6 @@ namespace LibraryOfGamecraft.BT
         // ── コマンド ─────────────────────────────────────────
         public void MoveTo(Vector3 destination)
         {
-            Debug.Log($"[CharacterMotor] {name}: MoveTo called / isOnNavMesh={_agent.isOnNavMesh} / dest={destination}");
             if (!_agent.isOnNavMesh)
             {
                 Debug.LogWarning($"[CharacterMotor] {name}: NavMesh 上にいません", this);
@@ -45,17 +43,9 @@ namespace LibraryOfGamecraft.BT
 
             // 目標座標を NavMesh 上に補正（空中や NavMesh 外の指定に対応）
             if (NavMesh.SamplePosition(destination, out var hit, 5f, NavMesh.AllAreas))
-            {
-                Debug.Log($"[CharacterMotor] {name}: SamplePosition 補正 {destination} → {hit.position}");
                 _agent.SetDestination(hit.position);
-            }
             else
-            {
                 Debug.LogWarning($"[CharacterMotor] {name}: 目標地点 {destination} の近くに NavMesh がありません（半径 5m 以内）", this);
-                return;
-            }
-
-            _debugFrames = 10;
         }
 
         public void SetSpeed(float speed) => _agent.speed = speed;
@@ -83,11 +73,11 @@ namespace LibraryOfGamecraft.BT
             _cc    = GetComponent<CharacterController>();
             _agent = GetComponent<NavMeshAgent>();
 
-            _agent.updatePosition  = false;
-            _agent.updateRotation  = false;
-            _agent.speed           = _moveSpeed;
+            _agent.updatePosition   = false;
+            _agent.updateRotation   = false;
+            _agent.speed            = _moveSpeed;
             _agent.stoppingDistance = _stoppingDistance;
-            _agent.radius          = _cc.radius;
+            _agent.radius           = _cc.radius;
         }
 
         private void Update() => ApplyMovement();
@@ -98,13 +88,6 @@ namespace LibraryOfGamecraft.BT
             else                _verticalVelocity -= 9.81f * Time.deltaTime;
 
             var horizontal = _agent.desiredVelocity;
-
-            if (_debugFrames > 0)
-            {
-                Debug.Log($"[CharacterMotor] {name}: desiredVelocity={horizontal} / pathPending={_agent.pathPending} / hasPath={_agent.hasPath} / remaining={_agent.remainingDistance:F2}");
-                _debugFrames--;
-            }
-
             _cc.Move(new Vector3(horizontal.x, _verticalVelocity, horizontal.z) * Time.deltaTime);
             _agent.nextPosition = transform.position;
 

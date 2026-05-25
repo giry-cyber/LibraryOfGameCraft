@@ -11,14 +11,9 @@ namespace LibraryOfGamecraft.BT.Test
 
         protected override void OnEnter(BTContext ctx)
         {
+            Debug.Log($"[MoveToPosition] {ctx.Owner.name}: {_targetPosition} へ移動開始");
             var motor = ctx.Get<CharacterMotor>();
-            Debug.Log($"[MoveToPosition] {ctx.Owner.name}: OnEnter / motor={motor != null} / target={_targetPosition}");
-            if (motor == null)
-            {
-                Debug.LogError($"[MoveToPosition] {ctx.Owner.name}: CharacterMotor が見つかりません。同じ GameObject にあるか確認してください。", ctx.Owner);
-                return;
-            }
-            motor.MoveTo(_targetPosition);
+            if (motor != null) motor.MoveTo(_targetPosition);
         }
 
         protected override BTStatus OnTick(BTContext ctx)
@@ -32,7 +27,10 @@ namespace LibraryOfGamecraft.BT.Test
         {
             Debug.Log($"[MoveToPosition] {ctx.Owner.name}: 完了 ({status})");
             if (status != BTStatus.Success)
-                ctx.Get<CharacterMotor>()?.Stop();
+            {
+                var motor = ctx.Get<CharacterMotor>();
+                if (motor != null) motor.Stop();
+            }
         }
     }
 }

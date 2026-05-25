@@ -11,6 +11,9 @@ namespace LibraryOfGamecraft.BT
         private BTContext _context;
         private BTNode    _root;
 
+        // PerceptionSensor など外部コンポーネントが Blackboard を読み書きできるように公開する
+        public BTBlackboard Blackboard => _context?.Blackboard;
+
         protected virtual void Awake()
         {
             _context = new BTContext(gameObject);
@@ -18,6 +21,9 @@ namespace LibraryOfGamecraft.BT
 
         protected virtual void Start()
         {
+            // スポーン位置を HomePosition として記録（WanderAction などが参照）
+            _context.Blackboard.Set(BTKeys.HomePosition, transform.position);
+
             if (_graph != null)
                 _root = _graph.RootNode;
         }

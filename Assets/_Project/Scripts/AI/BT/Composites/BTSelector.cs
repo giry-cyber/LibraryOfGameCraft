@@ -2,36 +2,18 @@ using UnityEngine;
 
 namespace LibraryOfGamecraft.BT
 {
-    // 最初に Success を返した子で止まる（OR）。
-    // 全子が Failure → Failure。Running の子がいれば Running を返して次フレームへ。
+    // 最初に Success/Running を返した子で止まる（OR / 優先度選択）。
+    // 毎 Tick 先頭から評価するため、高優先度ブランチへの割り込みが自然に機能する。
     [CreateAssetMenu(fileName = "BTSelector", menuName = "LibraryOfGamecraft/BT/Composites/Selector")]
     public class BTSelector : BTComposite
     {
-        private string IndexKey => $"__sel_{GetInstanceID()}";
-
         public override BTStatus Tick(BTContext ctx)
         {
-            var i = ctx.Blackboard.Get<int>(IndexKey, 0);
-
-            while (i < _children.Count)
+            foreach (var child in _children)
             {
-                var status = _children[i].Tick(ctx);
-
-                if (status == BTStatus.Running)
-                {
-                    ctx.Blackboard.Set(IndexKey, i);
-                    return BTStatus.Running;
-                }
-                if (status == BTStatus.Success)
-                {
-                    ctx.Blackboard.Set(IndexKey, 0);
-                    return BTStatus.Success;
-                }
-
-                i++;
+                var status = child.Tick(ctx);
+                if (status != BTStatus.Failure) return status;
             }
-
-            ctx.Blackboard.Set(IndexKey, 0);
             return BTStatus.Failure;
         }
     }
