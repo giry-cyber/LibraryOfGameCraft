@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f307d7fa3b8519f4885e8b9599db00c8, type: 3}
   m_Name: TestBTGraph
   m_EditorClassIdentifier: 
-  _rootNode: {fileID: 11400000, guid: 4cd6dd4f162e66a48b0b96cd550393b5, type: 2}
+  _rootNode: {fileID: 11400000, guid: 26fb33a9c41184040a94af84864f3401, type: 2}

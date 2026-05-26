@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a8d63ba868559a44826f3387daf733b, type: 3}
   m_Name: BTSelector
   m_EditorClassIdentifier: 
-  _children: []
+  _children:
+  - {fileID: 11400000, guid: 4cd6dd4f162e66a48b0b96cd550393b5, type: 2}
+  - {fileID: 11400000, guid: 30eefb0a60cd41f41907c569e2a052dc, type: 2}
