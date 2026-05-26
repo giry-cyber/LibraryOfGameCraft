@@ -8,7 +8,7 @@ namespace LibraryOfGamecraft.BT
     [CreateAssetMenu(fileName = "BTSequence", menuName = "LibraryOfGamecraft/BT/Composites/Sequence")]
     public class BTSequence : BTComposite
     {
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             foreach (var child in _children)
             {

@@ -7,7 +7,7 @@ namespace LibraryOfGamecraft.BT
     [CreateAssetMenu(fileName = "BTInverter", menuName = "LibraryOfGamecraft/BT/Decorators/Inverter")]
     public class BTInverter : BTDecorator
     {
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             if (_child == null) return BTStatus.Failure;
 

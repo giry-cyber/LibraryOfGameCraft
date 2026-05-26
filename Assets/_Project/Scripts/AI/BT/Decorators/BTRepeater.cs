@@ -12,7 +12,7 @@ namespace LibraryOfGamecraft.BT
 
         private string CountKey => $"__rep_{GetInstanceID()}";
 
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             if (_child == null) return BTStatus.Failure;
 

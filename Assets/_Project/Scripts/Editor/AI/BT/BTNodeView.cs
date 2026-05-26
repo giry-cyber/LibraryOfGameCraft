@@ -113,16 +113,42 @@ namespace LibraryOfGamecraft.BT.Editor
             base.BuildContextualMenu(evt);
         }
 
+        // ── ルート / ランタイムデバッグ表示 ──────────────────────
+        private bool _isRoot;
+
         public void SetAsRoot(bool isRoot)
+        {
+            _isRoot = isRoot;
+            ApplyBorder(isRoot ? Color.yellow : Color.clear, isRoot ? 2f : 0f);
+        }
+
+        public void UpdateStatus(BTStatus status)
+        {
+            var (color, width) = status switch
+            {
+                BTStatus.Running => (new Color(1f,   0.9f, 0f),    3f),
+                BTStatus.Success => (new Color(0.2f, 0.9f, 0.2f),  2f),
+                BTStatus.Failure => (new Color(0.9f, 0.2f, 0.2f),  2f),
+                _                => (Color.clear,                   0f),
+            };
+            ApplyBorder(color, width);
+        }
+
+        public void ResetStatus()
+        {
+            ApplyBorder(_isRoot ? Color.yellow : Color.clear, _isRoot ? 2f : 0f);
+        }
+
+        private void ApplyBorder(Color color, float width)
         {
             style.borderTopColor    =
             style.borderBottomColor =
             style.borderLeftColor   =
-            style.borderRightColor  = new StyleColor(isRoot ? Color.yellow : Color.clear);
+            style.borderRightColor  = new StyleColor(color);
             style.borderTopWidth    =
             style.borderBottomWidth =
             style.borderLeftWidth   =
-            style.borderRightWidth  = isRoot ? 2f : 0f;
+            style.borderRightWidth  = width;
         }
     }
 }

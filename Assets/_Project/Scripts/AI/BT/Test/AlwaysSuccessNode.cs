@@ -7,6 +7,6 @@ namespace LibraryOfGamecraft.BT.Test
     {
         public static AlwaysSuccessNode Create() => CreateInstance<AlwaysSuccessNode>();
 
-        public override BTStatus Tick(BTContext ctx) => BTStatus.Success;
+        protected override BTStatus Execute(BTContext ctx) => BTStatus.Success;
     }
 }

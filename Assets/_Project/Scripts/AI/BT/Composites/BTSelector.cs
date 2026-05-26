@@ -7,7 +7,7 @@ namespace LibraryOfGamecraft.BT
     [CreateAssetMenu(fileName = "BTSelector", menuName = "LibraryOfGamecraft/BT/Composites/Selector")]
     public class BTSelector : BTComposite
     {
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             foreach (var child in _children)
             {

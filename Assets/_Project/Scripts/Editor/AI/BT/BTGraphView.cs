@@ -32,6 +32,36 @@ namespace LibraryOfGamecraft.BT.Editor
 
             graphViewChanged = OnGraphViewChanged;
             style.flexGrow = 1;
+
+            RegisterCallback<AttachToPanelEvent>(_ =>
+            {
+                schedule.Execute(RefreshDebugColors).Every(50);
+                EditorApplication.playModeStateChanged += OnPlayModeChanged;
+            });
+            RegisterCallback<DetachFromPanelEvent>(_ =>
+            {
+                EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+            });
+        }
+
+        private void OnPlayModeChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+                foreach (var view in _nodeViews.Values)
+                    view.ResetStatus();
+        }
+
+        private void RefreshDebugColors()
+        {
+            if (!EditorApplication.isPlaying) return;
+            int frame = UnityEngine.Time.frameCount;
+            foreach (var (node, view) in _nodeViews)
+            {
+                if (node.EditorLastTickFrame >= frame - 1)
+                    view.UpdateStatus(node.EditorLastStatus);
+                else
+                    view.ResetStatus();
+            }
         }
 
         // ─────────────────────────────────────

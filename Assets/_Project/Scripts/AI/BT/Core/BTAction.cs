@@ -8,7 +8,7 @@ namespace LibraryOfGamecraft.BT
     {
         private string ActiveKey => $"__act_{GetInstanceID()}";
 
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             var wasActive = ctx.Blackboard.Get<bool>(ActiveKey, false);
             if (!wasActive)

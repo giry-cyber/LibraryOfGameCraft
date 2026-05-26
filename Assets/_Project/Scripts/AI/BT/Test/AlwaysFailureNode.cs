@@ -7,6 +7,6 @@ namespace LibraryOfGamecraft.BT.Test
     {
         public static AlwaysFailureNode Create() => CreateInstance<AlwaysFailureNode>();
 
-        public override BTStatus Tick(BTContext ctx) => BTStatus.Failure;
+        protected override BTStatus Execute(BTContext ctx) => BTStatus.Failure;
     }
 }

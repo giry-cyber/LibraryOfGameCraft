@@ -18,7 +18,7 @@ namespace LibraryOfGamecraft.BT.Test
             return node;
         }
 
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             var count = ctx.Blackboard.Get<int>(CountKey, 0) + 1;
             ctx.Blackboard.Set(CountKey, count);

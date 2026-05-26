@@ -11,7 +11,7 @@ namespace LibraryOfGamecraft.BT
 
         private string ReadyAtKey => $"__cd_{GetInstanceID()}";
 
-        public override BTStatus Tick(BTContext ctx)
+        protected override BTStatus Execute(BTContext ctx)
         {
             if (Time.time < ctx.Blackboard.Get<float>(ReadyAtKey, 0f))
                 return BTStatus.Failure;
