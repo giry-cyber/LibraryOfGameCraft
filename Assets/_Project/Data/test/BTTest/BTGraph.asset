@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbb6120ce78f1b948a19f494a9e594b1, type: 3}
   m_Name: IsTargetDetectedCondition
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 559.3333, y: -125.33331}
+  _editorPosition: {x: 560.6667, y: -154}
 --- !u!114 &-392882803542007630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,7 +25,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8816cf6fed6f1944ea1d629d160e8c4c, type: 3}
   m_Name: WanderAction
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 691.3333, y: 133.33337}
+  _editorPosition: {x: 411.33334, y: 22.666687}
   _wanderRadius: 5
   _moveTimeout: 8
 --- !u!114 &11400000
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c54a01619e59ff1498f411513c21e72e, type: 3}
   m_Name: MoveToTargetAction
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 634, y: -6.6666565}
+  _editorPosition: {x: 595.3333, y: -56}
   _chaseSpeed: 5
   _updateInterval: 0.3
 --- !u!114 &7336326855909415856
@@ -74,9 +74,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a8d63ba868559a44826f3387daf733b, type: 3}
   m_Name: BTSelector
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 252.66664, y: -73.33334}
+  _editorPosition: {x: 238.00002, y: -143}
   _children:
-  - {fileID: 0}
+  - {fileID: 8672655047146482705}
+  - {fileID: -392882803542007630}
 --- !u!114 &8672655047146482705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,5 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa63188ddfa44b4d8f21b5778f5742b, type: 3}
   m_Name: BTSequence
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 458.6667, y: -35.333344}
-  _children: []
+  _editorPosition: {x: 411.33334, y: -153.99997}
+  _children:
+  - {fileID: -6209670449838599026}
+  - {fileID: 669177239440987789}

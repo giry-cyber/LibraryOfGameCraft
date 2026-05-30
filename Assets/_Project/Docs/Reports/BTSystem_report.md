@@ -41,6 +41,7 @@ CapabilityComponent（CharacterMotor・PerceptionSensor）を介して Unity API
 |--------|------|
 | `WanderAction` | HomePosition 中心にランダム徘徊 |
 | `MoveToTargetAction` | Blackboard["target"] を追跡 |
+| `AttackAction` | 停止してターゲット方向を向き AttackCapability.TriggerAttack() を発火。BTCooldown と組み合わせて使う |
 
 ### 提供ノード（Conditions）
 
@@ -48,6 +49,7 @@ CapabilityComponent（CharacterMotor・PerceptionSensor）を介して Unity API
 |--------|------|
 | `IsTargetDetectedCondition` | target != null |
 | `IsTargetLostCondition` | target == null または指定距離以上 |
+| `IsInAttackRangeCondition` | target が指定距離以内 |
 
 ### CapabilityComponent
 
@@ -55,6 +57,7 @@ CapabilityComponent（CharacterMotor・PerceptionSensor）を介して Unity API
 |--------|------|
 | `CharacterMotor` | NavMeshAgent + CharacterController ラッパー。MoveTo / Stop / FaceToward / HasArrived |
 | `PerceptionSensor` | 視野（角度+Raycast）と聴覚（半径 OverlapSphere）でターゲットを自動検知し Blackboard に書き込む |
+| `AttackCapability` | 攻撃処理の委譲先。OnAttackTriggered UnityEvent に外部からダメージ処理を配線する |
 
 ### ビジュアルエディタ（Editor 専用）
 
@@ -112,4 +115,5 @@ OnEnter/OnExit を正確に 1 回だけ呼ぶ。
 | 2026-05-22 | Phase 3: WanderAction / MoveToTargetAction / IsTargetDetectedCondition / IsTargetLostCondition 実装 |
 | 2026-05-22 | Phase 4A: BTDecorator 基底 + BTInverter / BTCooldown / BTRepeater 実装 |
 | 2026-05-26 | Phase 4D: ビジュアルエディタ実装（BTGraphEditorWindow / BTGraphView / BTNodeView）。[OnOpenAsset] で BTGraph ダブルクリック起動、反射ベースノード追加、BFS 自動整列 |
+| 2026-05-27 | AttackAction / IsInAttackRangeCondition / AttackCapability を追加 |
 | 2026-05-27 | ランタイムデバッグ可視化を追加。BTNode.Tick() を非 abstract ラッパーに変更し EditorLastStatus / EditorLastTickFrame を記録。BTGraphView が 50ms ポーリングでノードカラーを更新（Running=黄、Success=緑、Failure=赤）。EditMode 復帰時に全ノードリセット |
