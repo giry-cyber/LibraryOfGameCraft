@@ -25,7 +25,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8816cf6fed6f1944ea1d629d160e8c4c, type: 3}
   m_Name: WanderAction
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 411.33334, y: 22.666687}
+  _editorPosition: {x: 404.6667, y: 54.00003}
   _wanderRadius: 5
   _moveTimeout: 8
 --- !u!114 &11400000
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c54a01619e59ff1498f411513c21e72e, type: 3}
   m_Name: MoveToTargetAction
   m_EditorClassIdentifier: 
-  _editorPosition: {x: 595.3333, y: -56}
+  _editorPosition: {x: 621.3333, y: -77.33331}
   _chaseSpeed: 5
   _updateInterval: 0.3
 --- !u!114 &7336326855909415856
@@ -94,3 +94,4 @@ MonoBehaviour:
   _children:
   - {fileID: -6209670449838599026}
   - {fileID: 669177239440987789}
+  - {fileID: 0}

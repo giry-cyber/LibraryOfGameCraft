@@ -42,12 +42,23 @@ namespace LibraryOfGamecraft.BT.Editor
         {
             CreateToolbar();
             CreateGraphView();
+            Undo.undoRedoPerformed += Reload;
         }
 
         private void OnDisable()
         {
+            Undo.undoRedoPerformed -= Reload;
             if (_graphView != null)
                 rootVisualElement.Remove(_graphView);
+        }
+
+        // Inspector 編集後にフォーカスが戻ったとき、または Undo/Redo 時に再ロードする
+        private void OnFocus() => Reload();
+
+        private void Reload()
+        {
+            if (_currentGraph != null && _graphView != null)
+                _graphView.PopulateGraph(_currentGraph);
         }
 
         private void CreateToolbar()
