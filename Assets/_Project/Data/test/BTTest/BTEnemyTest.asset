@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8558187047668187160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa63188ddfa44b4d8f21b5778f5742b, type: 3}
+  m_Name: BTSequence
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 899.30005, y: -172.50005}
+  _children:
+  - {fileID: -1898574828029120591}
+  - {fileID: 452171606849905958}
+--- !u!114 &-6014590523260980069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa63188ddfa44b4d8f21b5778f5742b, type: 3}
+  m_Name: BTSequence
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 423.24118, y: -165.33336}
+  _children:
+  - {fileID: 6910524515065490735}
+  - {fileID: 4060466409277318658}
+--- !u!114 &-5544982576966754030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8d63ba868559a44826f3387daf733b, type: 3}
+  m_Name: BTSelector
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 245.26945, y: -148.66666}
+  _children:
+  - {fileID: -6014590523260980069}
+  - {fileID: -4661708058046501561}
+--- !u!114 &-4661708058046501561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8816cf6fed6f1944ea1d629d160e8c4c, type: 3}
+  m_Name: WanderAction
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 444.9586, y: 26.00002}
+  _wanderRadius: 5
+  _moveTimeout: 8
+--- !u!114 &-1898574828029120591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec21107dd6b37654c8568c2f3a7a432c, type: 3}
+  m_Name: IsInAttackRangeCondition
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 1141.131, y: -188.00009}
+  _attackRange: 2
+--- !u!114 &-1683349320026626039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c54a01619e59ff1498f411513c21e72e, type: 3}
+  m_Name: MoveToTargetAction
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 919.4745, y: 206.1229}
+  _chaseSpeed: 5
+  _updateInterval: 0.3
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f307d7fa3b8519f4885e8b9599db00c8, type: 3}
+  m_Name: BTEnemyTest
+  m_EditorClassIdentifier: 
+  _rootNode: {fileID: -5544982576966754030}
+  _allNodes:
+  - {fileID: -5544982576966754030}
+  - {fileID: -6014590523260980069}
+  - {fileID: -4661708058046501561}
+  - {fileID: 6910524515065490735}
+  - {fileID: -1898574828029120591}
+  - {fileID: 452171606849905958}
+  - {fileID: 6279646562201658601}
+  - {fileID: -1683349320026626039}
+  - {fileID: -8558187047668187160}
+  - {fileID: 4060466409277318658}
+  - {fileID: 2496454973275596369}
+  - {fileID: 7727028974740211592}
+  - {fileID: 6546094087755451773}
+  - {fileID: 9047802731349305827}
+--- !u!114 &452171606849905958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86675af13a0c73543ae06659a99dd722, type: 3}
+  m_Name: BTCooldown
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 1031.7001, y: -56.6667}
+  _child: {fileID: 6279646562201658601}
+  _cooldownTime: 3
+  _statusOnCooldown: 2
+--- !u!114 &2496454973275596369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27ef38d06020b14ba434dea21b9f532, type: 3}
+  m_Name: BTInverter
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 935.82935, y: -266.66666}
+  _child: {fileID: 0}
+--- !u!114 &4060466409277318658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8d63ba868559a44826f3387daf733b, type: 3}
+  m_Name: BTSelector
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 645.3334, y: -148.66666}
+  _children:
+  - {fileID: -8558187047668187160}
+  - {fileID: 7727028974740211592}
+--- !u!114 &6279646562201658601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6228db15276aa7045a05015a55eb9890, type: 3}
+  m_Name: AttackAction
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 1166.6821, y: -52.666637}
+  _rotationSpeed: 360
+--- !u!114 &6546094087755451773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27ef38d06020b14ba434dea21b9f532, type: 3}
+  m_Name: BTInverter
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 947.4269, y: 104.666664}
+  _child: {fileID: 0}
+--- !u!114 &6910524515065490735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb6120ce78f1b948a19f494a9e594b1, type: 3}
+  m_Name: IsTargetDetectedCondition
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 587.74805, y: -227.33336}
+--- !u!114 &7727028974740211592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa63188ddfa44b4d8f21b5778f5742b, type: 3}
+  m_Name: BTSequence
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 755.3333, y: 87.33336}
+  _children:
+  - {fileID: 6546094087755451773}
+  - {fileID: -1683349320026626039}
+--- !u!114 &9047802731349305827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec21107dd6b37654c8568c2f3a7a432c, type: 3}
+  m_Name: IsInAttackRangeCondition
+  m_EditorClassIdentifier: 
+  _editorPosition: {x: 1161.9968, y: 134.78499}
+  _attackRange: 2
