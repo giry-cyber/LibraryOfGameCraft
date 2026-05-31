@@ -59,6 +59,7 @@ CapabilityComponent（CharacterMotor・PerceptionSensor）を介して Unity API
 | `CharacterMotor` | NavMeshAgent + CharacterController ラッパー。MoveTo / Stop / FaceToward / HasArrived |
 | `PerceptionSensor` | 視野（角度+Raycast）と聴覚（半径 OverlapSphere）でターゲットを自動検知し Blackboard に書き込む |
 | `AttackCapability` | 攻撃処理の委譲先。OnAttackTriggered UnityEvent に外部からダメージ処理を配線する |
+| `BTAnimatorAdapter` | BT 実行状態 → Animator パラメータの橋渡し。Speed / HasTarget / Attack を自動駆動 |
 
 ### ビジュアルエディタ（Editor 専用）
 
@@ -118,5 +119,6 @@ OnEnter/OnExit を正確に 1 回だけ呼ぶ。
 | 2026-05-26 | Phase 4D: ビジュアルエディタ実装（BTGraphEditorWindow / BTGraphView / BTNodeView）。[OnOpenAsset] で BTGraph ダブルクリック起動、反射ベースノード追加、BFS 自動整列 |
 | 2026-05-27 | ビジュアルエディタのノード削除・参照クリーンアップを修正。ノード削除時に親 Composite/Decorator の参照とポートを自動クリーンアップ。処理順を「ノード先 → エッジ後」に固定 |
 | 2026-05-27 | BTParallel を追加（SuccessPolicy / FailurePolicy による柔軟な並列制御） |
+| 2026-05-27 | BTAnimatorAdapter を追加。CharacterMotor.Velocity → Speed、Blackboard["target"] → HasTarget、AttackCapability.OnAttackTriggered → Attack トリガーを自動駆動 |
 | 2026-05-27 | AttackAction / IsInAttackRangeCondition / AttackCapability を追加 |
 | 2026-05-27 | ランタイムデバッグ可視化を追加。BTNode.Tick() を非 abstract ラッパーに変更し EditorLastStatus / EditorLastTickFrame を記録。BTGraphView が 50ms ポーリングでノードカラーを更新（Running=黄、Success=緑、Failure=赤）。EditMode 復帰時に全ノードリセット |

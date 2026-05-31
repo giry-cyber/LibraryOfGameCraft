@@ -9,8 +9,9 @@
 5. [カスタムノードの作り方](#5-カスタムノードの作り方)
 6. [Blackboard の使い方](#6-blackboard-の使い方)
 7. [グラフ構成例](#7-グラフ構成例)
-8. [ランタイムデバッグ](#8-ランタイムデバッグ)
-9. [トラブルシューティング](#9-トラブルシューティング)
+8. [アニメーション連携](#8-アニメーション連携)
+9. [ランタイムデバッグ](#9-ランタイムデバッグ)
+10. [トラブルシューティング](#10-トラブルシューティング)
 
 ---
 
@@ -482,7 +483,94 @@ BTCooldown (cooldownTime = 5)
 
 ---
 
-## 8. ランタイムデバッグ
+## 8. アニメーション連携
+
+### 8.1 BTAnimatorAdapter の役割
+
+BT ノード自身は Animator を知らない設計になっている。  
+`BTAnimatorAdapter` が BT の実行状態を Animator パラメータに変換する橋渡し役を担う。
+
+```
+CharacterMotor.Velocity.magnitude  →  Speed (Float)    ← 移動ブレンドツリー
+Blackboard["target"] != null       →  HasTarget (Bool)  ← 戦闘状態遷移
+AttackCapability.OnAttackTriggered →  Attack (Trigger)  ← 攻撃モーション
+```
+
+### 8.2 コンポーネントのセットアップ
+
+NPC GameObject に `BTAnimatorAdapter` をアタッチする（`BTRunner` と `Animator` が必須）。
+
+| フィールド | デフォルト値 | 説明 |
+|-----------|-------------|------|
+| **Speed Param** | `"Speed"` | Float パラメータ名。空文字で無効化 |
+| **Speed Damp** | `0.1` | SetFloat のダンプ時間。大きいほど滑らか |
+| **Has Target Param** | `"HasTarget"` | Bool パラメータ名。空文字で無効化 |
+| **Attack Trigger Param** | `"Attack"` | Trigger パラメータ名。空文字で無効化 |
+
+### 8.3 Animator Controller の設定
+
+**必要なパラメータ：**
+
+| パラメータ名 | 型 | 用途 |
+|------------|-----|------|
+| `Speed` | Float | 移動ブレンドツリーの重み（0=停止、1=歩行、2=走りなど） |
+| `HasTarget` | Bool | 通常 → 戦闘 の状態遷移トリガー |
+| `Attack` | Trigger | 攻撃アニメーションの再生 |
+
+**推奨ステートマシン構成：**
+
+```
+[Any State] ──Attack(Trigger)──→ [Attack]
+                                     │ (攻撃モーション終了)
+                                     ↓
+[Locomotion] ←── HasTarget=false ──[Combat Locomotion]
+     │                                   ↑
+     └────── HasTarget=true ─────────────┘
+
+[Locomotion] / [Combat Locomotion]
+  └── ブレンドツリー (Speed: 0=Idle, 1=Walk, 2=Run)
+```
+
+### 8.4 攻撃タイミングの合わせ方
+
+攻撃の「ロジック」と「アニメーション」の同期は2層で制御する。
+
+```
+BTCooldown (cooldownTime = アニメーション長に合わせる)
+└── AttackAction → TriggerAttack() → BTAnimatorAdapter → SetTrigger("Attack")
+```
+
+1. `BTCooldown._cooldownTime` を攻撃アニメーションの長さ（秒）に合わせて設定する
+2. `Attack` ステートの Exit Time を 1.0 に設定し、モーション完了後に自動遷移させる
+3. ダメージ判定は Animation Event から `AttackCapability` のメソッドを呼ぶ
+
+**Animation Event によるダメージ判定のセットアップ：**
+
+```csharp
+// ダメージ処理を担う MonoBehaviour に以下のメソッドを追加
+public void OnAttackHit()
+{
+    // ヒットボックスを有効化してダメージを与える
+}
+```
+
+Animation Window で Attack アニメーションの「ヒット判定フレーム」に  
+`OnAttackHit` の Animation Event を追加する。
+
+### 8.5 セットアップチェックリスト
+
+- [ ] NPC に `BTAnimatorAdapter` をアタッチ
+- [ ] Animator Controller に `Speed`（Float）・`HasTarget`（Bool）・`Attack`（Trigger）を追加
+- [ ] ブレンドツリーを `Speed` パラメータで構成
+- [ ] `HasTarget` による通常 ↔ 戦闘ステートの遷移を設定
+- [ ] `[Any State] → Attack` の遷移を `Attack` トリガーで設定
+- [ ] `Attack` ステートの Exit Time = 1.0 に設定
+- [ ] `BTCooldown._cooldownTime` を Attack アニメーション長に合わせて設定
+- [ ] ダメージ判定が必要な場合は Animation Event で実装
+
+---
+
+## 9. ランタイムデバッグ
 
 BTGraph エディタウィンドウを**開いたまま Play Mode に入る**と、ノードの実行状態がリアルタイムに可視化される。
 
