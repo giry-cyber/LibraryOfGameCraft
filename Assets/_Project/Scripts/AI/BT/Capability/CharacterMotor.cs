@@ -19,7 +19,7 @@ namespace LibraryOfGamecraft.BT
 
         // ── クエリ ──────────────────────────────────────────
         public float   DefaultSpeed => _moveSpeed;
-        public Vector3 Velocity     => new Vector3(_cc.velocity.x, 0f, _cc.velocity.z);
+        public Vector3 Velocity     => new Vector3(_agent.desiredVelocity.x, 0f, _agent.desiredVelocity.z);
 
         public bool HasArrived =>
             _agent.isOnNavMesh &&

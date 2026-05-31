@@ -10,10 +10,17 @@ namespace LibraryOfGamecraft.BT
     {
         protected override BTStatus Execute(BTContext ctx)
         {
-            foreach (var child in _children)
+            for (int i = 0; i < _children.Count; i++)
             {
-                var status = child.Tick(ctx);
-                if (status != BTStatus.Success) return status;
+                if (_children[i] == null) continue;
+                var status = _children[i].Tick(ctx);
+                if (status != BTStatus.Success)
+                {
+                    // 評価されなかった後続ノードを強制終了
+                    for (int j = i + 1; j < _children.Count; j++)
+                        if (_children[j] != null) _children[j].ForceExit(ctx);
+                    return status;
+                }
             }
             return BTStatus.Success;
         }

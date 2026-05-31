@@ -122,3 +122,6 @@ OnEnter/OnExit を正確に 1 回だけ呼ぶ。
 | 2026-05-27 | BTAnimatorAdapter を追加。CharacterMotor.Velocity → Speed、Blackboard["target"] → HasTarget、AttackCapability.OnAttackTriggered → Attack トリガーを自動駆動 |
 | 2026-05-27 | AttackAction / IsInAttackRangeCondition / AttackCapability を追加 |
 | 2026-05-27 | ランタイムデバッグ可視化を追加。BTNode.Tick() を非 abstract ラッパーに変更し EditorLastStatus / EditorLastTickFrame を記録。BTGraphView が 50ms ポーリングでノードカラーを更新（Running=黄、Success=緑、Failure=赤）。EditMode 復帰時に全ノードリセット |
+| 2026-06-01 | CharacterMotor.Velocity を `_cc.velocity` から `_agent.desiredVelocity` に変更。徘徊開始直後から Animator Speed が正しく更新されない問題を修正 |
+| 2026-06-01 | BTAction のアクティブ追跡をフレーム番号ベースに変更。ForceExit 機構を BTNode/BTAction/BTComposite/BTDecorator に追加。BTSequence/BTSelector が評価しなかった後続ブランチを ForceExit するよう修正。追跡解除時に MoveToTargetAction.OnExit が呼ばれず Speed が追跡速度のまま残る問題を修正 |
+| 2026-06-01 | BTCooldown に `_statusOnCooldown` フィールド追加（デフォルト Running）。クールダウン中に Failure を返すと Selector が MoveToTargetAction にフォールスルーし射程内でも近づき続ける問題を修正。Running を返すことで親 Selector がクールダウン待機ブランチで止まるようになる |

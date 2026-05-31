@@ -18,6 +18,10 @@ namespace LibraryOfGamecraft.BT
 
         protected abstract BTStatus Execute(BTContext ctx);
 
+        // ブランチが親コンポジットに中断されたとき呼ばれる。
+        // BTAction は OnExit を発火し、BTComposite/BTDecorator は子へ伝播する。
+        public virtual void ForceExit(BTContext ctx) { }
+
 #if UNITY_EDITOR
         public BTStatus EditorLastStatus    { get; private set; }
         public int      EditorLastTickFrame { get; private set; }

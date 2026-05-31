@@ -6,6 +6,11 @@ namespace LibraryOfGamecraft.BT
     {
         [SerializeField] protected BTNode _child;
 
+        public override void ForceExit(BTContext ctx)
+        {
+            if (_child != null) _child.ForceExit(ctx);
+        }
+
         public static T Create<T>(BTNode child) where T : BTDecorator
         {
             var node = CreateInstance<T>();

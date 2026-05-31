@@ -7,6 +7,12 @@ namespace LibraryOfGamecraft.BT
     {
         [SerializeField] protected List<BTNode> _children = new();
 
+        public override void ForceExit(BTContext ctx)
+        {
+            foreach (var child in _children)
+                if (child != null) child.ForceExit(ctx);
+        }
+
         public static T Create<T>(params BTNode[] children) where T : BTComposite
         {
             var node = CreateInstance<T>();
