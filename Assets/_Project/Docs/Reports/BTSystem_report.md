@@ -116,6 +116,7 @@ OnEnter/OnExit を正確に 1 回だけ呼ぶ。
 | 2026-05-22 | Phase 3: WanderAction / MoveToTargetAction / IsTargetDetectedCondition / IsTargetLostCondition 実装 |
 | 2026-05-22 | Phase 4A: BTDecorator 基底 + BTInverter / BTCooldown / BTRepeater 実装 |
 | 2026-05-26 | Phase 4D: ビジュアルエディタ実装（BTGraphEditorWindow / BTGraphView / BTNodeView）。[OnOpenAsset] で BTGraph ダブルクリック起動、反射ベースノード追加、BFS 自動整列 |
+| 2026-05-27 | ビジュアルエディタのノード削除・参照クリーンアップを修正。ノード削除時に親 Composite/Decorator の参照とポートを自動クリーンアップ。処理順を「ノード先 → エッジ後」に固定 |
 | 2026-05-27 | BTParallel を追加（SuccessPolicy / FailurePolicy による柔軟な並列制御） |
 | 2026-05-27 | AttackAction / IsInAttackRangeCondition / AttackCapability を追加 |
 | 2026-05-27 | ランタイムデバッグ可視化を追加。BTNode.Tick() を非 abstract ラッパーに変更し EditorLastStatus / EditorLastTickFrame を記録。BTGraphView が 50ms ポーリングでノードカラーを更新（Running=黄、Success=緑、Failure=赤）。EditMode 復帰時に全ノードリセット |

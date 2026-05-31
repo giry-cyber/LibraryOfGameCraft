@@ -194,20 +194,20 @@ namespace LibraryOfGamecraft.BT.Editor
             if (_isPopulating) return change;
 
             if (change.edgesToCreate != null)
-            {
                 foreach (var edge in change.edgesToCreate)
                     SyncEdgeAdded(edge);
-            }
 
             if (change.elementsToRemove != null)
             {
+                // ノード削除を先に処理し参照・ポートをクリーンアップする。
+                // その後エッジ削除を処理することで、削除済みポートへの誤操作を防ぐ。
                 foreach (var elem in change.elementsToRemove)
-                {
+                    if (elem is BTNodeView nodeView)
+                        SyncNodeRemoved(nodeView);
+
+                foreach (var elem in change.elementsToRemove)
                     if (elem is Edge edge)
                         SyncEdgeRemoved(edge);
-                    else if (elem is BTNodeView nodeView)
-                        SyncNodeRemoved(nodeView);
-                }
             }
 
             return change;
@@ -233,8 +233,13 @@ namespace LibraryOfGamecraft.BT.Editor
         {
             if (edge.output?.node is not BTNodeView from) return;
 
+            // ノード削除に伴うエッジ削除は SyncNodeRemoved で処理済みなのでスキップ
+            if (!_nodeViews.ContainsKey(from.BTNode)) return;
+
             if (from.BTNode is BTComposite composite)
             {
+                // ポートがまだ有効かを確認（SyncNodeRemoved で除去済みの場合はスキップ）
+                if (!from.ChildPorts.Contains(edge.output)) return;
                 int index = edge.output.userData is int i ? i : 0;
                 if (index < composite.Children.Count)
                     composite.Editor_SetChildAt(index, null);
@@ -248,9 +253,34 @@ namespace LibraryOfGamecraft.BT.Editor
         private void SyncNodeRemoved(BTNodeView nodeView)
         {
             if (_graph == null) return;
-            _nodeViews.Remove(nodeView.BTNode);
-            _graph.Editor_RemoveNode(nodeView.BTNode);
-            AssetDatabase.RemoveObjectFromAsset(nodeView.BTNode);
+            var deleted = nodeView.BTNode;
+
+            // 全ノードを走査して削除ノードへの参照をクリーンアップする
+            foreach (var (node, view) in _nodeViews)
+            {
+                if (node == deleted) continue;
+
+                if (node is BTComposite composite)
+                {
+                    // 後ろから走査してインデックスずれを防ぐ
+                    for (int i = composite.Children.Count - 1; i >= 0; i--)
+                    {
+                        if (composite.Children[i] == deleted)
+                        {
+                            composite.Editor_RemoveChildAt(i);
+                            view.RemoveChildPortAt(i);
+                        }
+                    }
+                }
+                else if (node is BTDecorator decorator && decorator.Child == deleted)
+                {
+                    decorator.Editor_ClearChild();
+                }
+            }
+
+            _nodeViews.Remove(deleted);
+            _graph.Editor_RemoveNode(deleted);
+            AssetDatabase.RemoveObjectFromAsset(deleted);
             AssetDatabase.SaveAssets();
             RefreshRootHighlight();
         }

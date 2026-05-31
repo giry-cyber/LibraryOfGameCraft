@@ -29,6 +29,12 @@ namespace LibraryOfGamecraft.BT
             UnityEditor.EditorUtility.SetDirty(this);
         }
 
+        public void Editor_RemoveChildAt(int index)
+        {
+            _children.RemoveAt(index);
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
         public void Editor_SetChildAt(int index, BTNode child)
         {
             _children[index] = child;

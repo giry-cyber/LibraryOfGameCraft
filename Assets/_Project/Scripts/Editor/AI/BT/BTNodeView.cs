@@ -67,6 +67,23 @@ namespace LibraryOfGamecraft.BT.Editor
             return port;
         }
 
+        public void RemoveChildPortAt(int index)
+        {
+            if (index < 0 || index >= ChildPorts.Count) return;
+            outputContainer.Remove(ChildPorts[index]);
+            ChildPorts.RemoveAt(index);
+
+            // 残りポートのインデックスを振り直す
+            for (int i = index; i < ChildPorts.Count; i++)
+            {
+                ChildPorts[i].portName = $"[{i}]";
+                ChildPorts[i].userData = i;
+            }
+
+            RefreshExpandedState();
+            RefreshPorts();
+        }
+
         private void OnAddChildClicked()
         {
             if (BTNode is BTComposite composite)
