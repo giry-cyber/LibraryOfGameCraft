@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Name: BTInverter
   m_EditorClassIdentifier: 
   _editorPosition: {x: 947.4269, y: 104.666664}
-  _child: {fileID: 0}
+  _child: {fileID: 9047802731349305827}
 --- !u!114 &6910524515065490735
 MonoBehaviour:
   m_ObjectHideFlags: 0
